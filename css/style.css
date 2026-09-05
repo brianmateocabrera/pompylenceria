@@ -1,0 +1,224 @@
+:root {
+    --bg: #050505;
+    --surface: #111111;
+    --surface-hover: #191919;
+    --border: #252525;
+    --text: #ffffff;
+    --muted: #9da3ae;
+    --accent: #ff4757;
+    --header-height: 70px;
+    --footer-height: 75px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Tinos", serif;
+}
+
+.header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    height: var(--header-height);
+    display: grid;
+    place-items: center;
+    background: rgba(17, 17, 17, 0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+}
+
+.header h1 {
+    color: var(--accent);
+    font-family: "Meow Script", cursive;
+    font-size: 2.4rem;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.main {
+    min-height: 100vh;
+    padding: calc(var(--header-height) + 30px) 20px calc(var(--footer-height) + 30px);
+    display: grid;
+    place-items: center;
+}
+
+.content-section {
+    width: min(100%, 700px);
+    padding: 40px 30px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+    visibility: visible;
+    animation: fadeIn 0.35s ease forwards;
+}
+
+.section-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--accent);
+    font-size: 1.6rem;
+}
+
+.content-section h2 {
+    margin-bottom: 15px;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 700;
+}
+
+.content-section p {
+    max-width: 580px;
+    margin: auto;
+    color: var(--muted);
+    font-size: 1.15rem;
+    line-height: 1.7;
+}
+
+.footer {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 100;
+    height: var(--footer-height);
+    background: rgba(17, 17, 17, 0.96);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+}
+
+.nav-tabs {
+    width: min(100%, 700px);
+    height: 100%;
+    margin: auto;
+    display: flex;
+}
+
+.tab-link {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-family: "Tinos", serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.tab-link i {
+    font-size: 1.2rem;
+}
+
+.tab-link::after {
+    content: "";
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+}
+
+.tab-link:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+}
+
+.tab-link.active {
+    color: var(--accent);
+}
+
+.tab-link.active::after {
+    transform: scaleX(1);
+}
+
+.tab-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -4px;
+}
+
+.tab-link:active {
+    transform: scale(0.96);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --header-height: 65px;
+        --footer-height: 70px;
+    }
+
+    .header h1 {
+        font-size: 2.1rem;
+    }
+
+    .main {
+        padding-inline: 15px;
+    }
+
+    .content-section {
+        padding: 30px 15px;
+    }
+
+    .content-section p {
+        font-size: 1.05rem;
+    }
+
+    .tab-link {
+        font-size: 0.75rem;
+    }
+
+    .tab-link i {
+        font-size: 1.1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
