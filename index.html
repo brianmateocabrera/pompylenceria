@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sitio web con navegación inferior por pestañas">
+    <title>Mi Sitio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Meow+Script&family=Tinos:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+    <header class="header">
+        <h1>Mi Sitio</h1>
+    </header>
+
+    <main class="main">
+        <section id="portada" class="content-section active" aria-labelledby="title-portada">
+            <div class="section-icon">
+                <i class="fa-solid fa-house"></i>
+            </div>
+            <h2 id="title-portada">Portada</h2>
+            <p>Bienvenido a la página de inicio. Un diseño elegante, oscuro y optimizado para dispositivos móviles.</p>
+        </section>
+
+        <section id="blog" class="content-section" aria-labelledby="title-blog">
+            <div class="section-icon">
+                <i class="fa-solid fa-newspaper"></i>
+            </div>
+            <h2 id="title-blog">Blog</h2>
+            <p>Lee nuestros últimos artículos, novedades y tutoriales.</p>
+        </section>
+
+        <section id="catalogo" class="content-section" aria-labelledby="title-catalogo">
+            <div class="section-icon">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <h2 id="title-catalogo">Catálogo</h2>
+            <p>Explorá nuestra lista completa de productos y servicios.</p>
+        </section>
+
+        <section id="favoritos" class="content-section" aria-labelledby="title-favoritos">
+            <div class="section-icon">
+                <i class="fa-solid fa-heart"></i>
+            </div>
+            <h2 id="title-favoritos">Favoritos</h2>
+            <p>Acá aparecerán los elementos que hayas guardado para consultar más tarde.</p>
+        </section>
+
+        <section id="carrito" class="content-section" aria-labelledby="title-carrito">
+            <div class="section-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <h2 id="title-carrito">Carrito</h2>
+            <p>Revisá tus compras pendientes y los productos seleccionados.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <nav class="nav-tabs" aria-label="Navegación principal">
+            <button class="tab-link active" data-target="portada" aria-label="Portada" aria-selected="true">
+                <i class="fa-solid fa-house"></i>
+                <span>Portada</span>
+            </button>
+
+            <button class="tab-link" data-target="blog" aria-label="Blog" aria-selected="false">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>Blog</span>
+            </button>
+
+            <button class="tab-link" data-target="catalogo" aria-label="Catálogo" aria-selected="false">
+                <i class="fa-solid fa-book-open"></i>
+                <span>Catálogo</span>
+            </button>
+
+            <button class="tab-link" data-target="favoritos" aria-label="Favoritos" aria-selected="false">
+                <i class="fa-solid fa-heart"></i>
+                <span>Favoritos</span>
+            </button>
+
+            <button class="tab-link" data-target="carrito" aria-label="Carrito" aria-selected="false">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Carrito</span>
+            </button>
+        </nav>
+    </footer>
+</body>
+</html>
