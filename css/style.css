@@ -46,7 +46,6 @@ body {
     line-height: 1;
     color: transparent;
     -webkit-text-stroke: 2px var(--accent);
-    transform: rotate(-5deg);
 }
 
 .header h2 {
