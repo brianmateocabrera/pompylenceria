@@ -51,7 +51,7 @@ body {
 .header h2 {
     margin-bottom: 15px;
     font-family: "Meow Script", cursive;
-    font-size: clamp(2rem, 6vw, 3rem);
+    font-size: 1,5rem);
     font-weight: 400;
 }
 
