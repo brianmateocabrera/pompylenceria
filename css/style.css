@@ -44,8 +44,9 @@ body {
     font-family: "Tinos", serif;
     font-size: 2.4rem;
     font-weight: 700;
-    font-style: italic;
     line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 2px #f00;
 }
 
 .header h2 {
