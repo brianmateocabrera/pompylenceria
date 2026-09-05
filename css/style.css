@@ -6,9 +6,14 @@
     --text: #ffffff;
     --muted: #9da3ae;
     --accent: #ff4757;
-    --header-height: 70px;
-    --footer-height: 75px;
+
+    --header-height: 65px;
+    --footer-height: 70px;
 }
+
+/* =========================
+   RESET
+========================= */
 
 * {
     margin: 0;
@@ -27,25 +32,38 @@ body {
     font-family: "Tinos", serif;
 }
 
+/* =========================
+   HEADER
+========================= */
+
 .header {
     position: fixed;
     inset: 0 0 auto;
     z-index: 100;
+
+    width: 100%;
     height: var(--header-height);
+
     display: grid;
     place-items: center;
+
+    padding: 0 15px;
+
     background: rgba(17, 17, 17, 0.95);
     border-bottom: 1px solid var(--border);
+
     backdrop-filter: blur(12px);
 }
 
 .header h1 {
     font-family: "Tinos", serif;
-    font-size: 2.4rem;
+    font-size: 2.1rem;
     font-weight: 700;
     line-height: 1;
+
     color: transparent;
     -webkit-text-stroke: 2px #fff;
+
     text-shadow:
         0 0 5px var(--accent),
         0 0 10px var(--accent),
@@ -54,32 +72,54 @@ body {
 }
 
 .header h2 {
+    margin-bottom: 10px;
+
     color: #fff;
-    margin-bottom: 15px;
     font-family: "Meow Script", cursive;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 400;
+
     transform: rotate(-5deg);
+
     text-shadow:
         0 0 5px var(--accent),
         0 0 10px var(--accent),
         0 0 20px var(--accent),
         0 0 30px var(--accent);
 }
+
+/* =========================
+   MAIN
+========================= */
+
 .main {
     min-height: 100vh;
-    padding: calc(var(--header-height) + 30px) 20px calc(var(--footer-height) + 30px);
+
+    padding:
+        calc(var(--header-height) + 20px)
+        15px
+        calc(var(--footer-height) + 20px);
+
     display: grid;
     place-items: center;
 }
 
+/* =========================
+   CONTENT
+========================= */
+
 .content-section {
-    width: min(100%, 410px);
-    padding: 40px 30px;
+    width: 100%;
+    max-width: 410px;
+
+    padding: 30px 15px;
+
     text-align: center;
+
     opacity: 0;
     visibility: hidden;
     transform: translateY(15px);
+
     display: none;
 }
 
@@ -90,85 +130,120 @@ body {
 }
 
 .section-icon {
-    width: 70px;
-    height: 70px;
+    width: 65px;
+    height: 65px;
+
     margin: 0 auto 20px;
+
     display: grid;
     place-items: center;
+
     border: 1px solid var(--border);
     border-radius: 50%;
+
     background: var(--surface);
     color: var(--accent);
-    font-size: 1.6rem;
+
+    font-size: 1.5rem;
 }
 
 .content-section h2 {
     margin-bottom: 15px;
+
     font-family: "Meow Script", cursive;
-    font-size: clamp(2rem, 6vw, 3rem);
+    font-size: 2rem;
     font-weight: 400;
 }
 
 .content-section p {
+    width: 100%;
     max-width: 580px;
+
     margin: auto;
+
     color: var(--muted);
+
     font-family: "Tinos", serif;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 400;
     font-style: normal;
     line-height: 1.7;
 }
 
+/* =========================
+   FOOTER / NAV
+========================= */
+
 .footer {
     position: fixed;
     inset: auto 0 0;
     z-index: 100;
+
+    width: 100%;
     height: var(--footer-height);
+
     background: rgba(17, 17, 17, 0.96);
     border-top: 1px solid var(--border);
+
     backdrop-filter: blur(12px);
 }
 
 .nav-tabs {
-    width: min(100%, 700px);
+    width: 100%;
     height: 100%;
-    margin: auto;
+
     display: flex;
 }
 
 .tab-link {
     position: relative;
+
     flex: 1;
+    min-width: 0;
     height: 100%;
+
     padding: 8px 4px;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     gap: 5px;
+
     border: 0;
     background: transparent;
+
     color: var(--muted);
+
     font-family: "Tinos", serif;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+
     cursor: pointer;
-    transition: color 0.2s ease, background 0.2s ease;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
 }
 
 .tab-link i {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .tab-link::after {
     content: "";
+
     position: absolute;
     left: 25%;
     right: 25%;
     bottom: 0;
+
     height: 2px;
+
     background: var(--accent);
+
     transform: scaleX(0);
+
     transition: transform 0.2s ease;
 }
 
@@ -194,6 +269,10 @@ body {
     transform: scale(0.96);
 }
 
+/* =========================
+   ANIMATION
+========================= */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -206,40 +285,81 @@ body {
     }
 }
 
-@media (max-width: 480px) {
+/* =========================
+   TABLET
+========================= */
+
+@media (min-width: 481px) {
     :root {
-        --header-height: 65px;
-        --footer-height: 70px;
+        --header-height: 70px;
+        --footer-height: 75px;
     }
 
     .header h1 {
-        font-size: 2.1rem;
+        font-size: 2.4rem;
     }
 
     .header h2 {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
     }
 
     .main {
-        padding-inline: 15px;
+        padding:
+            calc(var(--header-height) + 30px)
+            20px
+            calc(var(--footer-height) + 30px);
     }
 
     .content-section {
-        padding: 30px 15px;
+        padding: 40px 30px;
+    }
+
+    .content-section h2 {
+        font-size: clamp(2rem, 6vw, 3rem);
     }
 
     .content-section p {
-        font-size: 1.05rem;
+        font-size: 1.15rem;
+    }
+
+    .section-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.6rem;
     }
 
     .tab-link {
-        font-size: 0.75rem;
+        font-size: 0.85rem;
     }
 
     .tab-link i {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
 }
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 768px) {
+    .header {
+        padding-inline: 20px;
+    }
+
+    .content-section {
+        max-width: 600px;
+    }
+
+    .nav-tabs {
+        max-width: 700px;
+        margin-inline: auto;
+    }
+}
+
+/* =========================
+   REDUCED MOTION
+========================= */
 
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -247,5 +367,9 @@ body {
     *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
+    }
+
+    html {
+        scroll-behavior: auto;
     }
 }
