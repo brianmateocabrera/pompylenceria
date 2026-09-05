@@ -49,6 +49,7 @@ body {
 }
 
 .header h2 {
+    color: var(--accent);
     margin-bottom: 15px;
     font-family: "Meow Script", cursive;
     font-size: 1,5rem);
