@@ -48,6 +48,13 @@ body {
     line-height: 1;
 }
 
+.header h2 {
+    margin-bottom: 15px;
+    font-family: "Meow Script", cursive;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 400;
+}
+
 .main {
     min-height: 100vh;
     padding: calc(var(--header-height) + 30px) 20px calc(var(--footer-height) + 30px);
