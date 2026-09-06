@@ -112,31 +112,17 @@ function esCategoria(producto) {
 
 
 /*
- * Devuelve el nombre del archivo de la primera imagen.
- *
- * El JSON debe contener:
- *
- * "imágenes": [
- *     "foto1.webp",
- *     "foto2.webp"
- * ]
- *
- * La primera imagen es la principal.
+ * Devuelve el nombre del archivo de la primera imagen
  */
 function obtenerImagenPrincipal(producto) {
-    const imagenes = Array.isArray(producto["imágenes"])
-        ? producto["imágenes"]
-        : [];
+    const imagen = String(producto["imagen1"] ?? "").trim();
 
-    const primeraImagen = String(imagenes[0] ?? "").trim();
-
-    if (!primeraImagen) {
+    if (!imagen) {
         return PLACEHOLDER_IMAGE;
     }
 
-    return `${IMAGES_PATH}${primeraImagen}`;
+    return `${IMAGES_PATH}${imagen}`;
 }
-
 
 /* Crea una tarjeta de producto */
 function crearTarjeta(producto, categoria) {
