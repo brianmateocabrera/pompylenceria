@@ -194,6 +194,21 @@ function crearTarjeta(producto, categoria) {
                 : ""
             }
 
+          ${`
+    <a
+        class="product-whatsapp"
+        href="https://wa.me/543518189444?text=${encodeURIComponent(
+            `Info de ${nombre} ${codigo}.`
+        )}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Consultar ${escapeHTML(nombre)} por WhatsApp"
+    >
+        <i class="fa-brands fa-whatsapp"></i>
+        Consultar
+    </a>
+`}
+
         </div>
     `;
 
