@@ -171,6 +171,199 @@ body {
 }
 
 /* =========================
+   CATÁLOGO
+========================= */
+
+.catalog-section {
+    max-width: 1200px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.catalogo-productos {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+    text-align: left;
+}
+
+.catalogo-estado {
+    grid-column: 1 / -1;
+
+    text-align: center;
+}
+
+
+/* TARJETA */
+
+.product-card {
+    min-width: 0;
+
+    overflow: hidden;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-2px);
+
+    background: var(--surface-hover);
+
+    border-color: #383838;
+}
+
+
+/* IMAGEN */
+
+.product-image-wrapper {
+    width: 100%;
+
+    aspect-ratio: 1 / 1;
+
+    overflow: hidden;
+
+    background: #0b0b0b;
+}
+
+.product-image {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+/* INFORMACIÓN */
+
+.product-info {
+    padding: 11px;
+}
+
+.product-category {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--accent);
+
+    font-size: 0.72rem;
+    line-height: 1.2;
+}
+
+.product-code {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 0.72rem;
+    line-height: 1.2;
+}
+
+.product-name {
+    margin: 5px 0 8px;
+
+    color: var(--text);
+
+    font-family: "Tinos", serif;
+
+    font-size: 1rem;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+.product-prices {
+    display: flex;
+
+    align-items: baseline;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+}
+
+.product-price {
+    color: var(--text);
+
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.product-old-price {
+    color: var(--muted);
+
+    font-size: 0.8rem;
+
+    text-decoration: line-through;
+}
+
+.product-description {
+    margin-top: 7px !important;
+
+    color: var(--muted);
+
+    font-size: 0.82rem !important;
+
+    line-height: 1.35 !important;
+}
+
+
+/* TABLET */
+
+@media (min-width: 481px) {
+
+    .catalog-section {
+        max-width: 1200px;
+    }
+
+    .catalogo-productos {
+        gap: 16px;
+    }
+}
+
+
+/* DESKTOP */
+
+@media (min-width: 768px) {
+
+    .catalog-section {
+        max-width: 1200px;
+    }
+
+    .catalogo-productos {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+
+
+/* PANTALLAS GRANDES */
+
+@media (min-width: 1100px) {
+
+    .catalogo-productos {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* =========================
    FOOTER / NAV
 ========================= */
 
