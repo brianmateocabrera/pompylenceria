@@ -323,6 +323,52 @@ body {
     line-height: 1.35 !important;
 }
 
+.product-whatsapp {
+    width: 100%;
+
+    margin-top: 12px;
+    padding: 9px 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    border: 1px solid var(--accent);
+    border-radius: 7px;
+
+    background: transparent;
+    color: var(--text);
+
+    font-family: "Tinos", serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.product-whatsapp i {
+    font-size: 1rem;
+}
+
+.product-whatsapp:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+.product-whatsapp:active {
+    transform: scale(0.97);
+}
+
+.product-whatsapp:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
 
 /* TABLET */
 
