@@ -4,7 +4,7 @@ const sections = document.querySelectorAll(".content-section");
 const PRODUCTOS_URL = "data/productos.json";
 const IMAGES_PATH = "images/";
 const PLACEHOLDER_IMAGE = "images/no-image.webp";
-const WHATSAPP_NUMBER = "543518189189444";
+const WHATSAPP_NUMBER = "543518189444";
 
 let productosCatalogo = [];
 let categoriaActual = "";
@@ -63,7 +63,6 @@ function obtenerImagenesProducto(producto) {
     const claves = [
         "imagen1",
         "imagen2",
-        "imagen3",
         "imagen 4",
         "imagen 5",
         "imagen 6",
@@ -82,9 +81,14 @@ function obtenerImagenesProducto(producto) {
    LIGHTBOX / ZOOM
 ========================= */
 
-const imageLightbox = document.getElementById("image-lightbox");
-const lightboxImage = document.getElementById("lightbox-image");
-const lightboxClose = document.getElementById("lightbox-close");
+const imageLightbox =
+    document.getElementById("image-lightbox");
+
+const lightboxImage =
+    document.getElementById("lightbox-image");
+
+const lightboxClose =
+    document.getElementById("lightbox-close");
 
 function abrirLightbox(src, alt = "") {
     if (!imageLightbox || !lightboxImage) {
@@ -95,9 +99,14 @@ function abrirLightbox(src, alt = "") {
     lightboxImage.alt = alt;
 
     imageLightbox.classList.add("active");
-    imageLightbox.setAttribute("aria-hidden", "false");
+    imageLightbox.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 
-    document.body.classList.add("lightbox-open");
+    document.body.classList.add(
+        "lightbox-open"
+    );
 }
 
 function cerrarLightbox() {
@@ -106,9 +115,15 @@ function cerrarLightbox() {
     }
 
     imageLightbox.classList.remove("active");
-    imageLightbox.setAttribute("aria-hidden", "true");
 
-    document.body.classList.remove("lightbox-open");
+    imageLightbox.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.classList.remove(
+        "lightbox-open"
+    );
 
     if (lightboxImage) {
         lightboxImage.src = "";
@@ -152,19 +167,32 @@ document.addEventListener(
 
 function activarTabVisual(targetId) {
     tabs.forEach(tab => {
-        const active = tab.dataset.target === targetId;
+        const active =
+            tab.dataset.target === targetId;
 
-        tab.classList.toggle("active", active);
-        tab.setAttribute("aria-selected", active);
+        tab.classList.toggle(
+            "active",
+            active
+        );
+
+        tab.setAttribute(
+            "aria-selected",
+            String(active)
+        );
     });
 }
 
-function activateTab(targetId, updateUrl = true) {
-    const targetSection = document.getElementById(targetId);
+function activateTab(
+    targetId,
+    updateUrl = true
+) {
+    const targetSection =
+        document.getElementById(targetId);
 
-    const targetTab = document.querySelector(
-        `[data-target="${targetId}"]`
-    );
+    const targetTab =
+        document.querySelector(
+            `[data-target="${targetId}"]`
+        );
 
     if (!targetSection || !targetTab) {
         return;
@@ -181,7 +209,10 @@ function activateTab(targetId, updateUrl = true) {
         );
     });
 
-    localStorage.setItem("activeTab", targetId);
+    localStorage.setItem(
+        "activeTab",
+        targetId
+    );
 
     if (updateUrl) {
         history.pushState(
@@ -197,45 +228,70 @@ function activateTab(targetId, updateUrl = true) {
    DETALLE DE PRODUCTO
 ========================= */
 
-function mostrarDetalleProducto(producto, updateUrl = true) {
-    const detalle = document.getElementById(
-        "detalle-producto"
-    );
+function mostrarDetalleProducto(
+    producto,
+    updateUrl = true
+) {
+    const detalle =
+        document.getElementById(
+            "detalle-producto"
+        );
 
-    const contenido = document.getElementById(
-        "detalle-contenido"
-    );
+    const contenido =
+        document.getElementById(
+            "detalle-contenido"
+        );
 
-    if (!detalle || !contenido || !producto) {
+    if (
+        !detalle ||
+        !contenido ||
+        !producto
+    ) {
         return;
     }
 
-    const codigo = String(
-        producto["Cod."] ?? ""
-    ).trim();
+    const codigo =
+        String(
+            producto["Cod."] ?? ""
+        ).trim();
 
-    const nombre = String(
-        producto.nombre ?? ""
-    ).trim();
+    const nombre =
+        String(
+            producto.nombre ?? ""
+        ).trim();
 
-    const descripcion = String(
-        producto.descripcion ?? ""
-    ).trim();
+    const descripcion =
+        String(
+            producto.descripcion ?? ""
+        ).trim();
 
-    const precio = formatoPrecio(
-        producto.Precio
-    );
+    const precio =
+        formatoPrecio(
+            producto.Precio
+        );
 
-    const precioTachado = formatoPrecio(
-        producto["precio tachado"]
-    );
+    const precioTachado =
+        formatoPrecio(
+            producto["precio tachado"]
+        );
 
-    const imagenes = obtenerImagenesProducto(
-        producto
-    );
+    const imagenes =
+        obtenerImagenesProducto(
+            producto
+        );
 
     const imagenPrincipal =
-        imagenes[0] || PLACEHOLDER_IMAGE;
+        imagenes[0] ||
+        PLACEHOLDER_IMAGE;
+
+    /*
+     * La categoría ahora sale directamente
+     * del producto.
+     */
+    const categoria =
+        String(
+            producto.categoria ?? ""
+        ).trim();
 
     contenido.innerHTML = `
         <article class="product-detail">
@@ -301,11 +357,11 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
             <div class="product-detail-info">
 
                 ${
-                    categoriaActual
+                    categoria
                         ? `
                             <span class="product-detail-category">
                                 ${escapeHTML(
-                                    categoriaActual
+                                    categoria
                                 )}
                             </span>
                         `
@@ -316,7 +372,9 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
                     codigo
                         ? `
                             <span class="product-detail-code">
-                                ${escapeHTML(codigo)}
+                                ${escapeHTML(
+                                    codigo
+                                )}
                             </span>
                         `
                         : ""
@@ -332,7 +390,9 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
                         precio
                             ? `
                                 <span class="product-detail-price">
-                                    ${escapeHTML(precio)}
+                                    ${escapeHTML(
+                                        precio
+                                    )}
                                 </span>
                             `
                             : ""
@@ -414,7 +474,10 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
                 const nuevaImagen =
                     miniatura.dataset.image;
 
-                if (!imagenElemento || !nuevaImagen) {
+                if (
+                    !imagenElemento ||
+                    !nuevaImagen
+                ) {
                     return;
                 }
 
@@ -441,7 +504,7 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
 
 
     /* =========================
-       ZOOM DE IMAGEN PRINCIPAL
+       ZOOM
     ========================= */
 
     imagenElemento?.addEventListener(
@@ -460,7 +523,7 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
 
 
     /* =========================
-       FALLBACK IMAGEN PRINCIPAL
+       FALLBACK IMAGEN
     ========================= */
 
     imagenElemento?.addEventListener(
@@ -491,8 +554,9 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
         );
     });
 
-    // El detalle pertenece al catálogo.
-    activarTabVisual("catalogo");
+    activarTabVisual(
+        "catalogo"
+    );
 
     localStorage.setItem(
         "activeTab",
@@ -511,6 +575,10 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
 }
 
 
+/* =========================
+   ABRIR PRODUCTO POR CÓDIGO
+========================= */
+
 function abrirDetallePorCodigo(
     codigo,
     updateUrl = false
@@ -518,6 +586,7 @@ function abrirDetallePorCodigo(
     const producto =
         productosCatalogo.find(
             item =>
+                !esCategoria(item) &&
                 String(
                     item["Cod."] ?? ""
                 ).trim() ===
@@ -533,27 +602,14 @@ function abrirDetallePorCodigo(
         return;
     }
 
-    categoriaActual = "";
-
-    for (const item of productosCatalogo) {
-        if (esCategoria(item)) {
-            categoriaActual =
-                String(
-                    item["Cod."] ?? ""
-                ).trim();
-
-            continue;
-        }
-
-        if (
-            String(
-                item["Cod."] ?? ""
-            ).trim() ===
-            String(codigo).trim()
-        ) {
-            break;
-        }
-    }
+    /*
+     * La categoría ya fue asignada al producto
+     * al cargar el catálogo.
+     */
+    categoriaActual =
+        String(
+            producto.categoria ?? ""
+        ).trim();
 
     mostrarDetalleProducto(
         producto,
@@ -566,7 +622,9 @@ function abrirDetallePorCodigo(
    CATÁLOGO
 ========================= */
 
-function renderizarCatalogo(productos) {
+function renderizarCatalogo(
+    productos
+) {
     const contenedor =
         document.getElementById(
             "catalogo-productos"
@@ -581,38 +639,54 @@ function renderizarCatalogo(productos) {
     let categoria = "";
 
     productos.forEach(producto => {
+
+        /*
+         * Detectamos una nueva categoría.
+         */
         if (esCategoria(producto)) {
-            categoria = String(
-                producto["Cod."] ?? ""
-            ).trim();
+            categoria =
+                String(
+                    producto["Cod."] ?? ""
+                ).trim();
 
             return;
         }
 
-        const codigo = String(
-            producto["Cod."] ?? ""
-        ).trim();
+        const codigo =
+            String(
+                producto["Cod."] ?? ""
+            ).trim();
 
-        const nombre = String(
-            producto.nombre ?? ""
-        ).trim();
+        const nombre =
+            String(
+                producto.nombre ?? ""
+            ).trim();
 
         if (!nombre) {
             return;
         }
 
-        const precio = formatoPrecio(
-            producto.Precio
-        );
+        /*
+         * Guardamos la categoría dentro
+         * del propio objeto producto.
+         */
+        producto.categoria =
+            categoria;
+
+        const precio =
+            formatoPrecio(
+                producto.Precio
+            );
 
         const precioTachado =
             formatoPrecio(
                 producto["precio tachado"]
             );
 
-        const descripcion = String(
-            producto.descripcion ?? ""
-        ).trim();
+        const descripcion =
+            String(
+                producto.descripcion ?? ""
+            ).trim();
 
         const imagen =
             obtenerImagenPrincipal(
@@ -745,7 +819,7 @@ function renderizarCatalogo(productos) {
 
 
         /* =========================
-           IMAGEN DE TARJETA
+           FALLBACK IMAGEN TARJETA
         ========================= */
 
         const imagenElemento =
@@ -778,7 +852,7 @@ function renderizarCatalogo(productos) {
             "click",
             () => {
                 categoriaActual =
-                    categoria;
+                    producto.categoria;
 
                 mostrarDetalleProducto(
                     producto
@@ -796,7 +870,7 @@ function renderizarCatalogo(productos) {
                     event.preventDefault();
 
                     categoriaActual =
-                        categoria;
+                        producto.categoria;
 
                     mostrarDetalleProducto(
                         producto
@@ -863,8 +937,12 @@ async function cargarCatalogo() {
             productosCatalogo
         );
 
-        // Permite abrir directamente
-        // un producto indicado en la URL.
+        /*
+         * Ahora que cada producto ya tiene
+         * su categoría asignada, podemos
+         * resolver correctamente un producto
+         * abierto directamente mediante hash.
+         */
         manejarHash();
 
     } catch (error) {
@@ -887,12 +965,16 @@ async function cargarCatalogo() {
 ========================= */
 
 document
-    .getElementById("volver-catalogo")
+    .getElementById(
+        "volver-catalogo"
+    )
     ?.addEventListener(
         "click",
         () => {
             cerrarLightbox();
-            activateTab("catalogo");
+            activateTab(
+                "catalogo"
+            );
         }
     );
 
@@ -923,13 +1005,19 @@ function manejarHash() {
             window.location.hash.slice(1)
         );
 
-    if (hash.startsWith("producto-")) {
+    if (
+        hash.startsWith(
+            "producto-"
+        )
+    ) {
         const codigo =
             hash.slice(
                 "producto-".length
             );
 
-        if (productosCatalogo.length) {
+        if (
+            productosCatalogo.length
+        ) {
             abrirDetallePorCodigo(
                 codigo,
                 false
