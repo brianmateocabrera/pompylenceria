@@ -2,121 +2,370 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sitio web con navegación inferior por pestañas">
-    <title>Pompy - Lencería y sexshop</title>
-     
-    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Meow+Script&family=Tinos:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="js/app.js" defer></script>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="POMPY — Lencería y Sex-Shop"
+    >
+
+    <title>POMPY — Lencería y Sex-Shop</title>
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="images/favicon.png"
+    >
+
+    <!-- Google Fonts -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Meow+Script&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- Styles -->
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 </head>
+
 <body>
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
     <header class="header">
-        <h1>POMPY</h1>
-        <h2>Lencería y Sex-Shop</h2>
+        <div>
+            <h1>POMPY</h1>
+
+            <h2>
+                Lencería y Sex-Shop
+            </h2>
+        </div>
     </header>
 
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
     <main class="main">
-        <section id="portada" class="content-section active" aria-labelledby="title-portada">
+
+        <!-- =========================
+             PORTADA
+        ========================== -->
+
+        <section
+            id="portada"
+            class="content-section active"
+            aria-labelledby="title-portada"
+        >
             <div class="section-icon">
                 <i class="fa-solid fa-house"></i>
             </div>
-            <h2 id="title-portada">Portada</h2>
-            <p>Bienvenido a la página de inicio. Un diseño elegante, oscuro y optimizado para dispositivos móviles.</p>
+
+            <h2 id="title-portada">
+                Bienvenidos
+            </h2>
+
+            <p>
+                Descubrí nuestra propuesta de
+                lencería y productos seleccionados
+                para vos.
+            </p>
         </section>
 
-        <section id="blog" class="content-section" aria-labelledby="title-blog">
+
+        <!-- =========================
+             BLOG
+        ========================== -->
+
+        <section
+            id="blog"
+            class="content-section"
+            aria-labelledby="title-blog"
+        >
             <div class="section-icon">
                 <i class="fa-solid fa-newspaper"></i>
             </div>
-            <h2 id="title-blog">Blog</h2>
-            <p>Lee nuestros últimos artículos, novedades y tutoriales.</p>
+
+            <h2 id="title-blog">
+                Blog
+            </h2>
+
+            <p>
+                Próximamente vas a encontrar
+                novedades, consejos y contenido
+                relacionado con nuestros productos.
+            </p>
         </section>
 
-<section id="catalogo" class="content-section catalog-section" aria-labelledby="title-catalogo">
-    <div class="section-icon">
-        <i class="fa-solid fa-book-open"></i>
-    </div>
 
-    <h2 id="title-catalogo">Catálogo</h2>
+        <!-- =========================
+             CATÁLOGO
+        ========================== -->
 
-    <div id="catalogo-productos" class="catalogo-productos" aria-live="polite">
-        <p class="catalogo-estado">Cargando productos...</p>
-    </div>
-</section>
+        <section
+            id="catalogo"
+            class="content-section catalog-section"
+            aria-labelledby="title-catalogo"
+        >
+            <div class="section-icon">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
 
-<section
-    id="detalle-producto"
-    class="content-section product-detail-section"
-    aria-labelledby="title-detalle-producto"
->
-    <button
-        id="volver-catalogo"
-        class="detail-back"
-        type="button"
-    >
-        <i class="fa-solid fa-arrow-left"></i>
-        Volver al catálogo
-    </button>
+            <h2 id="title-catalogo">
+                Catálogo
+            </h2>
 
-    <div id="detalle-contenido">
-        <!-- Se completa dinámicamente con JavaScript -->
-    </div>
-</section>
+            <div
+                id="catalogo-productos"
+                class="catalogo-productos"
+                aria-live="polite"
+            >
+                <p class="catalogo-estado">
+                    Cargando productos...
+                </p>
+            </div>
+        </section>
 
-        <section id="favoritos" class="content-section" aria-labelledby="title-favoritos">
+
+        <!-- =========================
+             DETALLE DE PRODUCTO
+             
+             Esta sección NO tiene
+             una pestaña en el footer.
+        ========================== -->
+
+        <section
+            id="detalle-producto"
+            class="content-section product-detail-section"
+            aria-labelledby="title-detalle-producto"
+        >
+
+            <button
+                id="volver-catalogo"
+                class="detail-back"
+                type="button"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Volver al catálogo
+            </button>
+
+
+            <!-- Contenido generado por JavaScript -->
+
+            <div id="detalle-contenido">
+                <!--
+                    JavaScript inserta aquí:
+                    - galería
+                    - imágenes
+                    - categoría
+                    - código
+                    - nombre
+                    - precios
+                    - descripción
+                    - WhatsApp
+                -->
+            </div>
+
+
+            <!-- =========================
+                 LIGHTBOX / ZOOM
+            ========================== -->
+
+            <div
+                id="image-lightbox"
+                class="image-lightbox"
+                aria-hidden="true"
+            >
+
+                <button
+                    id="lightbox-close"
+                    class="lightbox-close"
+                    type="button"
+                    aria-label="Cerrar imagen"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <img
+                    id="lightbox-image"
+                    class="lightbox-image"
+                    src=""
+                    alt=""
+                >
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FAVORITOS
+        ========================== -->
+
+        <section
+            id="favoritos"
+            class="content-section"
+            aria-labelledby="title-favoritos"
+        >
             <div class="section-icon">
                 <i class="fa-solid fa-heart"></i>
             </div>
-            <h2 id="title-favoritos">Favoritos</h2>
-            <p>Acá aparecerán los elementos que hayas guardado para consultar más tarde.</p>
+
+            <h2 id="title-favoritos">
+                Favoritos
+            </h2>
+
+            <p>
+                Próximamente vas a poder guardar
+                tus productos favoritos.
+            </p>
         </section>
 
-        <section id="carrito" class="content-section" aria-labelledby="title-carrito">
+
+        <!-- =========================
+             CARRITO
+        ========================== -->
+
+        <section
+            id="carrito"
+            class="content-section"
+            aria-labelledby="title-carrito"
+        >
             <div class="section-icon">
                 <i class="fa-solid fa-cart-shopping"></i>
             </div>
-            <h2 id="title-carrito">Carrito</h2>
-            <p>Revisá tus compras pendientes y los productos seleccionados.</p>
+
+            <h2 id="title-carrito">
+                Carrito
+            </h2>
+
+            <p>
+                Tu carrito de compras aparecerá
+                aquí.
+            </p>
         </section>
+
     </main>
 
+
+    <!-- =========================
+         FOOTER / NAVEGACIÓN
+    ========================== -->
+
     <footer class="footer">
-        <nav class="nav-tabs" aria-label="Navegación principal">
-            <button class="tab-link active" data-target="portada" aria-label="Portada" aria-selected="true">
+
+        <nav
+            class="nav-tabs"
+            aria-label="Navegación principal"
+        >
+
+            <button
+                class="tab-link active"
+                type="button"
+                data-target="portada"
+                aria-selected="true"
+            >
                 <i class="fa-solid fa-house"></i>
-                <span>Portada</span>
+
+                <span>
+                    Portada
+                </span>
             </button>
 
-            <button class="tab-link" data-target="blog" aria-label="Blog" aria-selected="false">
+
+            <button
+                class="tab-link"
+                type="button"
+                data-target="blog"
+                aria-selected="false"
+            >
                 <i class="fa-solid fa-newspaper"></i>
-                <span>Blog</span>
+
+                <span>
+                    Blog
+                </span>
             </button>
 
-            <button class="tab-link" data-target="catalogo" aria-label="Catálogo" aria-selected="false">
+
+            <button
+                class="tab-link"
+                type="button"
+                data-target="catalogo"
+                aria-selected="false"
+            >
                 <i class="fa-solid fa-book-open"></i>
-                <span>Catálogo</span>
+
+                <span>
+                    Catálogo
+                </span>
             </button>
 
-            <button class="tab-link" data-target="favoritos" aria-label="Favoritos" aria-selected="false">
+
+            <button
+                class="tab-link"
+                type="button"
+                data-target="favoritos"
+                aria-selected="false"
+            >
                 <i class="fa-solid fa-heart"></i>
-                <span>Favoritos</span>
+
+                <span>
+                    Favoritos
+                </span>
             </button>
 
-            <button class="tab-link" data-target="carrito" aria-label="Carrito" aria-selected="false">
+
+            <button
+                class="tab-link"
+                type="button"
+                data-target="carrito"
+                aria-selected="false"
+            >
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span>Carrito</span>
+
+                <span>
+                    Carrito
+                </span>
             </button>
+
         </nav>
+
     </footer>
+
+
+    <!-- JavaScript -->
+    <script
+        src="js/app.js"
+        defer
+    ></script>
+
 </body>
 </html>
