@@ -4,7 +4,7 @@ const sections = document.querySelectorAll(".content-section");
 const PRODUCTOS_URL = "data/productos.json";
 const IMAGES_PATH = "images/";
 const PLACEHOLDER_IMAGE = "images/no-image.webp";
-const WHATSAPP_NUMBER = "543518189444";
+const WHATSAPP_NUMBER = "543518189189444";
 
 let productosCatalogo = [];
 let categoriaActual = "";
@@ -79,6 +79,74 @@ function obtenerImagenesProducto(producto) {
 
 
 /* =========================
+   LIGHTBOX / ZOOM
+========================= */
+
+const imageLightbox = document.getElementById("image-lightbox");
+const lightboxImage = document.getElementById("lightbox-image");
+const lightboxClose = document.getElementById("lightbox-close");
+
+function abrirLightbox(src, alt = "") {
+    if (!imageLightbox || !lightboxImage) {
+        return;
+    }
+
+    lightboxImage.src = src;
+    lightboxImage.alt = alt;
+
+    imageLightbox.classList.add("active");
+    imageLightbox.setAttribute("aria-hidden", "false");
+
+    document.body.classList.add("lightbox-open");
+}
+
+function cerrarLightbox() {
+    if (!imageLightbox) {
+        return;
+    }
+
+    imageLightbox.classList.remove("active");
+    imageLightbox.setAttribute("aria-hidden", "true");
+
+    document.body.classList.remove("lightbox-open");
+
+    if (lightboxImage) {
+        lightboxImage.src = "";
+        lightboxImage.alt = "";
+    }
+}
+
+lightboxClose?.addEventListener(
+    "click",
+    event => {
+        event.stopPropagation();
+        cerrarLightbox();
+    }
+);
+
+imageLightbox?.addEventListener(
+    "click",
+    event => {
+        if (event.target === imageLightbox) {
+            cerrarLightbox();
+        }
+    }
+);
+
+document.addEventListener(
+    "keydown",
+    event => {
+        if (
+            event.key === "Escape" &&
+            imageLightbox?.classList.contains("active")
+        ) {
+            cerrarLightbox();
+        }
+    }
+);
+
+
+/* =========================
    NAVEGACIÓN PRINCIPAL
 ========================= */
 
@@ -93,6 +161,7 @@ function activarTabVisual(targetId) {
 
 function activateTab(targetId, updateUrl = true) {
     const targetSection = document.getElementById(targetId);
+
     const targetTab = document.querySelector(
         `[data-target="${targetId}"]`
     );
@@ -100,6 +169,8 @@ function activateTab(targetId, updateUrl = true) {
     if (!targetSection || !targetTab) {
         return;
     }
+
+    cerrarLightbox();
 
     activarTabVisual(targetId);
 
@@ -163,6 +234,9 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
         producto
     );
 
+    const imagenPrincipal =
+        imagenes[0] || PLACEHOLDER_IMAGE;
+
     contenido.innerHTML = `
         <article class="product-detail">
 
@@ -171,10 +245,7 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
                 <div class="product-detail-image-wrapper">
                     <img
                         class="product-detail-image"
-                        src="${escapeHTML(
-                            imagenes[0] ||
-                            PLACEHOLDER_IMAGE
-                        )}"
+                        src="${escapeHTML(imagenPrincipal)}"
                         alt="${escapeHTML(nombre)}"
                     >
                 </div>
@@ -194,8 +265,7 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
                                         ) => `
                                             <button
                                                 class="product-detail-thumbnail ${
-                                                    indice ===
-                                                    0
+                                                    indice === 0
                                                         ? "active"
                                                         : ""
                                                 }"
@@ -204,12 +274,10 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
                                                     imagen
                                                 )}"
                                                 aria-label="Ver imagen ${
-                                                    indice +
-                                                    1
+                                                    indice + 1
                                                 }"
                                                 aria-pressed="${
-                                                    indice ===
-                                                    0
+                                                    indice === 0
                                                 }"
                                             >
                                                 <img
@@ -323,6 +391,7 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
             ".product-detail-thumbnail"
         );
 
+
     /* =========================
        MINIATURAS
     ========================= */
@@ -331,7 +400,7 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
         const imagenMiniatura =
             miniatura.querySelector("img");
 
-        imagenMiniatura.addEventListener(
+        imagenMiniatura?.addEventListener(
             "error",
             () => {
                 imagenMiniatura.src =
@@ -344,6 +413,10 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
             () => {
                 const nuevaImagen =
                     miniatura.dataset.image;
+
+                if (!imagenElemento || !nuevaImagen) {
+                    return;
+                }
 
                 imagenElemento.src =
                     nuevaImagen;
@@ -359,18 +432,38 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
 
                     item.setAttribute(
                         "aria-pressed",
-                        activa
+                        String(activa)
                     );
                 });
             }
         );
     });
 
+
+    /* =========================
+       ZOOM DE IMAGEN PRINCIPAL
+    ========================= */
+
+    imagenElemento?.addEventListener(
+        "click",
+        () => {
+            if (!imagenElemento.src) {
+                return;
+            }
+
+            abrirLightbox(
+                imagenElemento.src,
+                imagenElemento.alt
+            );
+        }
+    );
+
+
     /* =========================
        FALLBACK IMAGEN PRINCIPAL
     ========================= */
 
-    imagenElemento.addEventListener(
+    imagenElemento?.addEventListener(
         "error",
         () => {
             if (
@@ -385,6 +478,7 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
                 PLACEHOLDER_IMAGE;
         }
     );
+
 
     /* =========================
        MOSTRAR DETALLE
@@ -415,6 +509,7 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
         );
     }
 }
+
 
 function abrirDetallePorCodigo(
     codigo,
@@ -648,6 +743,7 @@ function renderizarCatalogo(productos) {
             </div>
         `;
 
+
         /* =========================
            IMAGEN DE TARJETA
         ========================= */
@@ -657,7 +753,7 @@ function renderizarCatalogo(productos) {
                 ".product-image"
             );
 
-        imagenElemento.addEventListener(
+        imagenElemento?.addEventListener(
             "error",
             () => {
                 if (
@@ -672,6 +768,7 @@ function renderizarCatalogo(productos) {
                     PLACEHOLDER_IMAGE;
             }
         );
+
 
         /* =========================
            ABRIR DETALLE
@@ -708,6 +805,7 @@ function renderizarCatalogo(productos) {
             }
         );
 
+
         /* =========================
            WHATSAPP
         ========================= */
@@ -717,12 +815,13 @@ function renderizarCatalogo(productos) {
                 ".product-whatsapp"
             );
 
-        whatsapp.addEventListener(
+        whatsapp?.addEventListener(
             "click",
             event => {
                 event.stopPropagation();
             }
         );
+
 
         contenedor.appendChild(
             tarjeta
@@ -792,6 +891,7 @@ document
     ?.addEventListener(
         "click",
         () => {
+            cerrarLightbox();
             activateTab("catalogo");
         }
     );
@@ -851,6 +951,7 @@ function manejarHash() {
         false
     );
 }
+
 
 window.addEventListener(
     "hashchange",
