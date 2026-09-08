@@ -53,29 +53,21 @@ function obtenerNumero(valor) {
         : null;
 }
 
-function calcularDescuento(
-    precio,
-    precioTachado
-) {
-    const precioActual =
-        obtenerNumero(precio);
-
-    const precioAnterior =
-        obtenerNumero(precioTachado);
+function calcularDescuento(precio, precioTachado) {
+    const actual = obtenerNumero(precio);
+    const anterior = obtenerNumero(precioTachado);
 
     if (
-        precioActual === null ||
-        precioAnterior === null ||
-        precioAnterior <= 0 ||
-        precioActual >= precioAnterior
+        actual === null ||
+        anterior === null ||
+        anterior <= 0 ||
+        actual >= anterior
     ) {
         return null;
     }
 
     return Math.round(
-        ((precioAnterior - precioActual) /
-            precioAnterior) *
-            100
+        ((anterior - actual) / anterior) * 100
     );
 }
 
@@ -88,10 +80,9 @@ function esCategoria(producto) {
 }
 
 function obtenerImagenPrincipal(producto) {
-    const imagen =
-        String(
-            producto["imagen1"] ?? ""
-        ).trim();
+    const imagen = String(
+        producto["imagen1"] ?? ""
+    ).trim();
 
     if (!imagen) {
         return PLACEHOLDER_IMAGE;
@@ -113,45 +104,32 @@ function obtenerImagenesProducto(producto) {
     ];
 
     return claves
-        .map(
-            clave =>
-                String(
-                    producto[clave] ?? ""
-                ).trim()
+        .map(clave =>
+            String(producto[clave] ?? "").trim()
         )
         .filter(Boolean)
-        .map(
-            nombre =>
-                `${IMAGES_PATH}${nombre}`
+        .map(nombre =>
+            `${IMAGES_PATH}${nombre}`
         );
 }
 
 
 /* =========================
-   LIGHTBOX / ZOOM
+   LIGHTBOX
 ========================= */
 
-const imageLightbox =
-    document.getElementById(
-        "image-lightbox"
-    );
+const lightbox =
+    document.getElementById("image-lightbox");
 
 const lightboxImage =
-    document.getElementById(
-        "lightbox-image"
-    );
+    document.getElementById("lightbox-image");
 
 const lightboxClose =
-    document.getElementById(
-        "lightbox-close"
-    );
+    document.getElementById("lightbox-close");
 
-function abrirLightbox(
-    src,
-    alt = ""
-) {
+function abrirLightbox(src, alt = "") {
     if (
-        !imageLightbox ||
+        !lightbox ||
         !lightboxImage
     ) {
         return;
@@ -160,11 +138,8 @@ function abrirLightbox(
     lightboxImage.src = src;
     lightboxImage.alt = alt;
 
-    imageLightbox.classList.add(
-        "active"
-    );
-
-    imageLightbox.setAttribute(
+    lightbox.classList.add("active");
+    lightbox.setAttribute(
         "aria-hidden",
         "false"
     );
@@ -175,15 +150,12 @@ function abrirLightbox(
 }
 
 function cerrarLightbox() {
-    if (!imageLightbox) {
+    if (!lightbox) {
         return;
     }
 
-    imageLightbox.classList.remove(
-        "active"
-    );
-
-    imageLightbox.setAttribute(
+    lightbox.classList.remove("active");
+    lightbox.setAttribute(
         "aria-hidden",
         "true"
     );
@@ -191,27 +163,18 @@ function cerrarLightbox() {
     document.body.classList.remove(
         "lightbox-open"
     );
-
-    if (lightboxImage) {
-        lightboxImage.src = "";
-        lightboxImage.alt = "";
-    }
 }
 
 lightboxClose?.addEventListener(
     "click",
-    event => {
-        event.stopPropagation();
-        cerrarLightbox();
-    }
+    cerrarLightbox
 );
 
-imageLightbox?.addEventListener(
+lightbox?.addEventListener(
     "click",
     event => {
         if (
-            event.target ===
-            imageLightbox
+            event.target === lightbox
         ) {
             cerrarLightbox();
         }
@@ -222,10 +185,7 @@ document.addEventListener(
     "keydown",
     event => {
         if (
-            event.key === "Escape" &&
-            imageLightbox?.classList.contains(
-                "active"
-            )
+            event.key === "Escape"
         ) {
             cerrarLightbox();
         }
@@ -237,13 +197,10 @@ document.addEventListener(
    NAVEGACIÓN PRINCIPAL
 ========================= */
 
-function activarTabVisual(
-    targetId
-) {
+function activarTabVisual(targetId) {
     tabs.forEach(tab => {
         const active =
-            tab.dataset.target ===
-            targetId;
+            tab.dataset.target === targetId;
 
         tab.classList.toggle(
             "active",
@@ -252,7 +209,7 @@ function activarTabVisual(
 
         tab.setAttribute(
             "aria-selected",
-            String(active)
+            active
         );
     });
 }
@@ -262,9 +219,7 @@ function activateTab(
     updateUrl = true
 ) {
     const targetSection =
-        document.getElementById(
-            targetId
-        );
+        document.getElementById(targetId);
 
     const targetTab =
         document.querySelector(
@@ -280,19 +235,14 @@ function activateTab(
 
     cerrarLightbox();
 
-    activarTabVisual(
-        targetId
-    );
+    activarTabVisual(targetId);
 
-    sections.forEach(
-        section => {
-            section.classList.toggle(
-                "active",
-                section ===
-                    targetSection
-            );
-        }
-    );
+    sections.forEach(section => {
+        section.classList.toggle(
+            "active",
+            section === targetSection
+        );
+    });
 
     localStorage.setItem(
         "activeTab",
@@ -306,6 +256,60 @@ function activateTab(
             `#${targetId}`
         );
     }
+}
+
+
+/* =========================
+   PRODUCTOS RELACIONADOS
+========================= */
+
+function obtenerProductosRelacionados(
+    producto,
+    limite = 4
+) {
+    const codigoActual =
+        String(
+            producto["Cod."] ?? ""
+        ).trim();
+
+    const categoria =
+        String(
+            producto.categoria ?? ""
+        ).trim();
+
+    if (!categoria) {
+        return [];
+    }
+
+    return productosCatalogo
+        .filter(item => {
+            if (esCategoria(item)) {
+                return false;
+            }
+
+            const codigo =
+                String(
+                    item["Cod."] ?? ""
+                ).trim();
+
+            const nombre =
+                String(
+                    item.nombre ?? ""
+                ).trim();
+
+            const categoriaItem =
+                String(
+                    item.categoria ?? ""
+                ).trim();
+
+            return (
+                codigo &&
+                codigo !== codigoActual &&
+                nombre &&
+                categoriaItem === categoria
+            );
+        })
+        .slice(0, limite);
 }
 
 
@@ -350,6 +354,11 @@ function mostrarDetalleProducto(
             producto.descripcion ?? ""
         ).trim();
 
+    const categoria =
+        String(
+            producto.categoria ?? ""
+        ).trim();
+
     const precio =
         formatoPrecio(
             producto.Precio
@@ -371,14 +380,14 @@ function mostrarDetalleProducto(
             producto
         );
 
+    const relacionados =
+        obtenerProductosRelacionados(
+            producto
+        );
+
     const imagenPrincipal =
         imagenes[0] ||
         PLACEHOLDER_IMAGE;
-
-    const categoria =
-        String(
-            producto.categoria ?? ""
-        ).trim();
 
     contenido.innerHTML = `
         <article class="product-detail">
@@ -390,7 +399,7 @@ function mostrarDetalleProducto(
                     ${
                         descuento
                             ? `
-                                <span class="product-discount">
+                                <span class="product-discount-badge">
                                     -${descuento}%
                                 </span>
                             `
@@ -424,8 +433,7 @@ function mostrarDetalleProducto(
                                         ) => `
                                             <button
                                                 class="product-detail-thumbnail ${
-                                                    indice ===
-                                                    0
+                                                    indice === 0
                                                         ? "active"
                                                         : ""
                                                 }"
@@ -434,12 +442,10 @@ function mostrarDetalleProducto(
                                                     imagen
                                                 )}"
                                                 aria-label="Ver imagen ${
-                                                    indice +
-                                                    1
+                                                    indice + 1
                                                 }"
                                                 aria-pressed="${
-                                                    indice ===
-                                                    0
+                                                    indice === 0
                                                 }"
                                             >
                                                 <img
@@ -487,9 +493,7 @@ function mostrarDetalleProducto(
                 }
 
                 <h2 class="product-detail-title">
-                    ${escapeHTML(
-                        nombre
-                    )}
+                    ${escapeHTML(nombre)}
                 </h2>
 
                 <div class="product-detail-prices">
@@ -557,22 +561,202 @@ function mostrarDetalleProducto(
             </div>
 
         </article>
+
+        ${
+            relacionados.length
+                ? `
+                    <section
+                        class="related-products"
+                        aria-labelledby="related-products-title"
+                    >
+
+                        <h3 id="related-products-title">
+                            También te puede interesar
+                        </h3>
+
+                        <div class="related-products-grid">
+
+                            ${relacionados
+                                .map(
+                                    relacionado => {
+                                        const codigoRelacionado =
+                                            String(
+                                                relacionado["Cod."] ?? ""
+                                            ).trim();
+
+                                        const nombreRelacionado =
+                                            String(
+                                                relacionado.nombre ?? ""
+                                            ).trim();
+
+                                        const precioRelacionado =
+                                            formatoPrecio(
+                                                relacionado.Precio
+                                            );
+
+                                        const precioTachadoRelacionado =
+                                            formatoPrecio(
+                                                relacionado[
+                                                    "precio tachado"
+                                                ]
+                                            );
+
+                                        const descuentoRelacionado =
+                                            calcularDescuento(
+                                                relacionado.Precio,
+                                                relacionado[
+                                                    "precio tachado"
+                                                ]
+                                            );
+
+                                        const imagenRelacionada =
+                                            obtenerImagenPrincipal(
+                                                relacionado
+                                            );
+
+                                        return `
+                                            <article
+                                                class="related-product-card"
+                                                data-related-product="${escapeHTML(
+                                                    codigoRelacionado
+                                                )}"
+                                                tabindex="0"
+                                                role="button"
+                                                aria-label="Ver ${escapeHTML(
+                                                    nombreRelacionado
+                                                )}"
+                                            >
+
+                                                <div class="related-product-image-wrapper">
+
+                                                    ${
+                                                        descuentoRelacionado
+                                                            ? `
+                                                                <span class="product-discount-badge">
+                                                                    -${descuentoRelacionado}%
+                                                                </span>
+                                                            `
+                                                            : ""
+                                                    }
+
+                                                    <img
+                                                        class="related-product-image"
+                                                        src="${escapeHTML(
+                                                            imagenRelacionada
+                                                        )}"
+                                                        alt="${escapeHTML(
+                                                            nombreRelacionado
+                                                        )}"
+                                                        loading="lazy"
+                                                    >
+
+                                                </div>
+
+                                                <div class="related-product-info">
+
+                                                    <span class="related-product-code">
+                                                        ${escapeHTML(
+                                                            codigoRelacionado
+                                                        )}
+                                                    </span>
+
+                                                    <h4 class="related-product-name">
+                                                        ${escapeHTML(
+                                                            nombreRelacionado
+                                                        )}
+                                                    </h4>
+
+                                                    <div class="related-product-prices">
+
+                                                        ${
+                                                            precioRelacionado
+                                                                ? `
+                                                                    <span class="related-product-price">
+                                                                        ${escapeHTML(
+                                                                            precioRelacionado
+                                                                        )}
+                                                                    </span>
+                                                                `
+                                                                : ""
+                                                        }
+
+                                                        ${
+                                                            precioTachadoRelacionado
+                                                                ? `
+                                                                    <span class="related-product-old-price">
+                                                                        ${escapeHTML(
+                                                                            precioTachadoRelacionado
+                                                                        )}
+                                                                    </span>
+                                                                `
+                                                                : ""
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+
+                                            </article>
+                                        `;
+                                    }
+                                )
+                                .join("")}
+
+                        </div>
+
+                    </section>
+                `
+                : ""
+        }
     `;
+
+
+    /* =========================
+       IMAGEN PRINCIPAL
+    ========================= */
 
     const imagenElemento =
         contenido.querySelector(
             ".product-detail-image"
         );
 
-    const miniaturas =
-        contenido.querySelectorAll(
-            ".product-detail-thumbnail"
+    if (imagenElemento) {
+        imagenElemento.addEventListener(
+            "error",
+            () => {
+                if (
+                    imagenElemento.src.endsWith(
+                        PLACEHOLDER_IMAGE
+                    )
+                ) {
+                    return;
+                }
+
+                imagenElemento.src =
+                    PLACEHOLDER_IMAGE;
+            }
         );
+
+        imagenElemento.addEventListener(
+            "click",
+            () => {
+                abrirLightbox(
+                    imagenElemento.src,
+                    imagenElemento.alt
+                );
+            }
+        );
+    }
 
 
     /* =========================
        MINIATURAS
     ========================= */
+
+    const miniaturas =
+        contenido.querySelectorAll(
+            ".product-detail-thumbnail"
+        );
 
     miniaturas.forEach(
         miniatura => {
@@ -592,16 +776,14 @@ function mostrarDetalleProducto(
             miniatura.addEventListener(
                 "click",
                 () => {
-                    const nuevaImagen =
-                        miniatura.dataset
-                            .image;
-
                     if (
-                        !imagenElemento ||
-                        !nuevaImagen
+                        !imagenElemento
                     ) {
                         return;
                     }
+
+                    const nuevaImagen =
+                        miniatura.dataset.image;
 
                     imagenElemento.src =
                         nuevaImagen;
@@ -609,8 +791,7 @@ function mostrarDetalleProducto(
                     miniaturas.forEach(
                         item => {
                             const activa =
-                                item ===
-                                miniatura;
+                                item === miniatura;
 
                             item.classList.toggle(
                                 "active",
@@ -619,9 +800,7 @@ function mostrarDetalleProducto(
 
                             item.setAttribute(
                                 "aria-pressed",
-                                String(
-                                    activa
-                                )
+                                activa
                             );
                         }
                     );
@@ -632,43 +811,67 @@ function mostrarDetalleProducto(
 
 
     /* =========================
-       ZOOM
+       PRODUCTOS RELACIONADOS
     ========================= */
 
-    imagenElemento?.addEventListener(
-        "click",
-        () => {
-            if (
-                !imagenElemento.src
-            ) {
-                return;
-            }
+    const tarjetasRelacionadas =
+        contenido.querySelectorAll(
+            ".related-product-card"
+        );
 
-            abrirLightbox(
-                imagenElemento.src,
-                imagenElemento.alt
+    tarjetasRelacionadas.forEach(
+        tarjeta => {
+            const codigoRelacionado =
+                tarjeta.dataset
+                    .relatedProduct;
+
+            const imagen =
+                tarjeta.querySelector(
+                    ".related-product-image"
+                );
+
+            imagen?.addEventListener(
+                "error",
+                () => {
+                    if (
+                        imagen.src.endsWith(
+                            PLACEHOLDER_IMAGE
+                        )
+                    ) {
+                        return;
+                    }
+
+                    imagen.src =
+                        PLACEHOLDER_IMAGE;
+                }
             );
-        }
-    );
 
+            const abrirRelacionado =
+                () => {
+                    abrirDetallePorCodigo(
+                        codigoRelacionado,
+                        true
+                    );
+                };
 
-    /* =========================
-       FALLBACK IMAGEN
-    ========================= */
+            tarjeta.addEventListener(
+                "click",
+                abrirRelacionado
+            );
 
-    imagenElemento?.addEventListener(
-        "error",
-        () => {
-            if (
-                imagenElemento.src.endsWith(
-                    PLACEHOLDER_IMAGE
-                )
-            ) {
-                return;
-            }
+            tarjeta.addEventListener(
+                "keydown",
+                event => {
+                    if (
+                        event.key === "Enter" ||
+                        event.key === " "
+                    ) {
+                        event.preventDefault();
 
-            imagenElemento.src =
-                PLACEHOLDER_IMAGE;
+                        abrirRelacionado();
+                    }
+                }
+            );
         }
     );
 
@@ -715,6 +918,9 @@ function abrirDetallePorCodigo(
     codigo,
     updateUrl = false
 ) {
+    const codigoBuscado =
+        String(codigo).trim();
+
     const producto =
         productosCatalogo.find(
             item =>
@@ -722,7 +928,7 @@ function abrirDetallePorCodigo(
                 String(
                     item["Cod."] ?? ""
                 ).trim() ===
-                String(codigo).trim()
+                    codigoBuscado
         );
 
     if (!producto) {
@@ -768,12 +974,14 @@ function renderizarCatalogo(
 
     productos.forEach(
         producto => {
-
-            if (esCategoria(producto)) {
+            if (
+                esCategoria(
+                    producto
+                )
+            ) {
                 categoria =
                     String(
-                        producto["Cod."] ??
-                            ""
+                        producto["Cod."] ?? ""
                     ).trim();
 
                 return;
@@ -781,14 +989,12 @@ function renderizarCatalogo(
 
             const codigo =
                 String(
-                    producto["Cod."] ??
-                        ""
+                    producto["Cod."] ?? ""
                 ).trim();
 
             const nombre =
                 String(
-                    producto.nombre ??
-                        ""
+                    producto.nombre ?? ""
                 ).trim();
 
             if (!nombre) {
@@ -797,7 +1003,7 @@ function renderizarCatalogo(
 
             /*
              * Guardamos la categoría
-             * dentro del producto.
+             * directamente en el producto.
              */
             producto.categoria =
                 categoria;
@@ -824,8 +1030,7 @@ function renderizarCatalogo(
 
             const descripcion =
                 String(
-                    producto.descripcion ??
-                        ""
+                    producto.descripcion ?? ""
                 ).trim();
 
             const imagen =
@@ -865,7 +1070,7 @@ function renderizarCatalogo(
                     ${
                         descuento
                             ? `
-                                <span class="product-discount">
+                                <span class="product-discount-badge">
                                     -${descuento}%
                                 </span>
                             `
@@ -987,7 +1192,7 @@ function renderizarCatalogo(
 
 
             /* =========================
-               FALLBACK IMAGEN
+               IMAGEN DE TARJETA
             ========================= */
 
             const imagenElemento =
@@ -1016,15 +1221,29 @@ function renderizarCatalogo(
                ABRIR DETALLE
             ========================= */
 
-            tarjeta.addEventListener(
-                "click",
+            const abrirDetalle =
                 () => {
                     categoriaActual =
-                        producto.categoria;
+                        categoria;
 
                     mostrarDetalleProducto(
-                        producto
+                        producto,
+                        true
                     );
+                };
+
+            tarjeta.addEventListener(
+                "click",
+                event => {
+                    if (
+                        event.target.closest(
+                            ".product-whatsapp"
+                        )
+                    ) {
+                        return;
+                    }
+
+                    abrirDetalle();
                 }
             );
 
@@ -1032,18 +1251,12 @@ function renderizarCatalogo(
                 "keydown",
                 event => {
                     if (
-                        event.key ===
-                            "Enter" ||
+                        event.key === "Enter" ||
                         event.key === " "
                     ) {
                         event.preventDefault();
 
-                        categoriaActual =
-                            producto.categoria;
-
-                        mostrarDetalleProducto(
-                            producto
-                        );
+                        abrirDetalle();
                     }
                 }
             );
@@ -1064,7 +1277,6 @@ function renderizarCatalogo(
                     event.stopPropagation();
                 }
             );
-
 
             contenedor.appendChild(
                 tarjeta
@@ -1135,8 +1347,6 @@ document
     ?.addEventListener(
         "click",
         () => {
-            cerrarLightbox();
-
             activateTab(
                 "catalogo"
             );
@@ -1148,18 +1358,16 @@ document
    TABS
 ========================= */
 
-tabs.forEach(
-    tab => {
-        tab.addEventListener(
-            "click",
-            () => {
-                activateTab(
-                    tab.dataset.target
-                );
-            }
-        );
-    }
-);
+tabs.forEach(tab => {
+    tab.addEventListener(
+        "click",
+        () => {
+            activateTab(
+                tab.dataset.target
+            );
+        }
+    );
+});
 
 
 /* =========================
@@ -1208,7 +1416,6 @@ function manejarHash() {
         false
     );
 }
-
 
 window.addEventListener(
     "hashchange",
