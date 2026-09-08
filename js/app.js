@@ -41,6 +41,44 @@ function formatoPrecio(valor) {
     }).format(numero);
 }
 
+function obtenerNumero(valor) {
+    const numero = Number(
+        String(valor ?? "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+    );
+
+    return Number.isFinite(numero)
+        ? numero
+        : null;
+}
+
+function calcularDescuento(
+    precio,
+    precioTachado
+) {
+    const precioActual =
+        obtenerNumero(precio);
+
+    const precioAnterior =
+        obtenerNumero(precioTachado);
+
+    if (
+        precioActual === null ||
+        precioAnterior === null ||
+        precioAnterior <= 0 ||
+        precioActual >= precioAnterior
+    ) {
+        return null;
+    }
+
+    return Math.round(
+        ((precioAnterior - precioActual) /
+            precioAnterior) *
+            100
+    );
+}
+
 function esCategoria(producto) {
     return (
         String(producto["Cod."] ?? "").trim() !== "" &&
@@ -50,7 +88,10 @@ function esCategoria(producto) {
 }
 
 function obtenerImagenPrincipal(producto) {
-    const imagen = String(producto["imagen1"] ?? "").trim();
+    const imagen =
+        String(
+            producto["imagen1"] ?? ""
+        ).trim();
 
     if (!imagen) {
         return PLACEHOLDER_IMAGE;
@@ -63,6 +104,7 @@ function obtenerImagenesProducto(producto) {
     const claves = [
         "imagen1",
         "imagen2",
+        "imagen3",
         "imagen 4",
         "imagen 5",
         "imagen 6",
@@ -71,9 +113,17 @@ function obtenerImagenesProducto(producto) {
     ];
 
     return claves
-        .map(clave => String(producto[clave] ?? "").trim())
+        .map(
+            clave =>
+                String(
+                    producto[clave] ?? ""
+                ).trim()
+        )
         .filter(Boolean)
-        .map(nombre => `${IMAGES_PATH}${nombre}`);
+        .map(
+            nombre =>
+                `${IMAGES_PATH}${nombre}`
+        );
 }
 
 
@@ -82,23 +132,38 @@ function obtenerImagenesProducto(producto) {
 ========================= */
 
 const imageLightbox =
-    document.getElementById("image-lightbox");
+    document.getElementById(
+        "image-lightbox"
+    );
 
 const lightboxImage =
-    document.getElementById("lightbox-image");
+    document.getElementById(
+        "lightbox-image"
+    );
 
 const lightboxClose =
-    document.getElementById("lightbox-close");
+    document.getElementById(
+        "lightbox-close"
+    );
 
-function abrirLightbox(src, alt = "") {
-    if (!imageLightbox || !lightboxImage) {
+function abrirLightbox(
+    src,
+    alt = ""
+) {
+    if (
+        !imageLightbox ||
+        !lightboxImage
+    ) {
         return;
     }
 
     lightboxImage.src = src;
     lightboxImage.alt = alt;
 
-    imageLightbox.classList.add("active");
+    imageLightbox.classList.add(
+        "active"
+    );
+
     imageLightbox.setAttribute(
         "aria-hidden",
         "false"
@@ -114,7 +179,9 @@ function cerrarLightbox() {
         return;
     }
 
-    imageLightbox.classList.remove("active");
+    imageLightbox.classList.remove(
+        "active"
+    );
 
     imageLightbox.setAttribute(
         "aria-hidden",
@@ -142,7 +209,10 @@ lightboxClose?.addEventListener(
 imageLightbox?.addEventListener(
     "click",
     event => {
-        if (event.target === imageLightbox) {
+        if (
+            event.target ===
+            imageLightbox
+        ) {
             cerrarLightbox();
         }
     }
@@ -153,7 +223,9 @@ document.addEventListener(
     event => {
         if (
             event.key === "Escape" &&
-            imageLightbox?.classList.contains("active")
+            imageLightbox?.classList.contains(
+                "active"
+            )
         ) {
             cerrarLightbox();
         }
@@ -165,10 +237,13 @@ document.addEventListener(
    NAVEGACIÓN PRINCIPAL
 ========================= */
 
-function activarTabVisual(targetId) {
+function activarTabVisual(
+    targetId
+) {
     tabs.forEach(tab => {
         const active =
-            tab.dataset.target === targetId;
+            tab.dataset.target ===
+            targetId;
 
         tab.classList.toggle(
             "active",
@@ -187,27 +262,37 @@ function activateTab(
     updateUrl = true
 ) {
     const targetSection =
-        document.getElementById(targetId);
+        document.getElementById(
+            targetId
+        );
 
     const targetTab =
         document.querySelector(
             `[data-target="${targetId}"]`
         );
 
-    if (!targetSection || !targetTab) {
+    if (
+        !targetSection ||
+        !targetTab
+    ) {
         return;
     }
 
     cerrarLightbox();
 
-    activarTabVisual(targetId);
+    activarTabVisual(
+        targetId
+    );
 
-    sections.forEach(section => {
-        section.classList.toggle(
-            "active",
-            section === targetSection
-        );
-    });
+    sections.forEach(
+        section => {
+            section.classList.toggle(
+                "active",
+                section ===
+                    targetSection
+            );
+        }
+    );
 
     localStorage.setItem(
         "activeTab",
@@ -275,6 +360,12 @@ function mostrarDetalleProducto(
             producto["precio tachado"]
         );
 
+    const descuento =
+        calcularDescuento(
+            producto.Precio,
+            producto["precio tachado"]
+        );
+
     const imagenes =
         obtenerImagenesProducto(
             producto
@@ -284,10 +375,6 @@ function mostrarDetalleProducto(
         imagenes[0] ||
         PLACEHOLDER_IMAGE;
 
-    /*
-     * La categoría ahora sale directamente
-     * del producto.
-     */
     const categoria =
         String(
             producto.categoria ?? ""
@@ -299,11 +386,27 @@ function mostrarDetalleProducto(
             <div class="product-detail-gallery">
 
                 <div class="product-detail-image-wrapper">
+
+                    ${
+                        descuento
+                            ? `
+                                <span class="product-discount">
+                                    -${descuento}%
+                                </span>
+                            `
+                            : ""
+                    }
+
                     <img
                         class="product-detail-image"
-                        src="${escapeHTML(imagenPrincipal)}"
-                        alt="${escapeHTML(nombre)}"
+                        src="${escapeHTML(
+                            imagenPrincipal
+                        )}"
+                        alt="${escapeHTML(
+                            nombre
+                        )}"
                     >
+
                 </div>
 
                 ${
@@ -321,7 +424,8 @@ function mostrarDetalleProducto(
                                         ) => `
                                             <button
                                                 class="product-detail-thumbnail ${
-                                                    indice === 0
+                                                    indice ===
+                                                    0
                                                         ? "active"
                                                         : ""
                                                 }"
@@ -330,10 +434,12 @@ function mostrarDetalleProducto(
                                                     imagen
                                                 )}"
                                                 aria-label="Ver imagen ${
-                                                    indice + 1
+                                                    indice +
+                                                    1
                                                 }"
                                                 aria-pressed="${
-                                                    indice === 0
+                                                    indice ===
+                                                    0
                                                 }"
                                             >
                                                 <img
@@ -381,7 +487,9 @@ function mostrarDetalleProducto(
                 }
 
                 <h2 class="product-detail-title">
-                    ${escapeHTML(nombre)}
+                    ${escapeHTML(
+                        nombre
+                    )}
                 </h2>
 
                 <div class="product-detail-prices">
@@ -411,6 +519,16 @@ function mostrarDetalleProducto(
                     }
 
                 </div>
+
+                ${
+                    descuento
+                        ? `
+                            <span class="product-detail-saving">
+                                Ahorrás un ${descuento}%
+                            </span>
+                        `
+                        : ""
+                }
 
                 ${
                     descripcion
@@ -456,51 +574,61 @@ function mostrarDetalleProducto(
        MINIATURAS
     ========================= */
 
-    miniaturas.forEach(miniatura => {
-        const imagenMiniatura =
-            miniatura.querySelector("img");
+    miniaturas.forEach(
+        miniatura => {
+            const imagenMiniatura =
+                miniatura.querySelector(
+                    "img"
+                );
 
-        imagenMiniatura?.addEventListener(
-            "error",
-            () => {
-                imagenMiniatura.src =
-                    PLACEHOLDER_IMAGE;
-            }
-        );
-
-        miniatura.addEventListener(
-            "click",
-            () => {
-                const nuevaImagen =
-                    miniatura.dataset.image;
-
-                if (
-                    !imagenElemento ||
-                    !nuevaImagen
-                ) {
-                    return;
+            imagenMiniatura?.addEventListener(
+                "error",
+                () => {
+                    imagenMiniatura.src =
+                        PLACEHOLDER_IMAGE;
                 }
+            );
 
-                imagenElemento.src =
-                    nuevaImagen;
+            miniatura.addEventListener(
+                "click",
+                () => {
+                    const nuevaImagen =
+                        miniatura.dataset
+                            .image;
 
-                miniaturas.forEach(item => {
-                    const activa =
-                        item === miniatura;
+                    if (
+                        !imagenElemento ||
+                        !nuevaImagen
+                    ) {
+                        return;
+                    }
 
-                    item.classList.toggle(
-                        "active",
-                        activa
+                    imagenElemento.src =
+                        nuevaImagen;
+
+                    miniaturas.forEach(
+                        item => {
+                            const activa =
+                                item ===
+                                miniatura;
+
+                            item.classList.toggle(
+                                "active",
+                                activa
+                            );
+
+                            item.setAttribute(
+                                "aria-pressed",
+                                String(
+                                    activa
+                                )
+                            );
+                        }
                     );
-
-                    item.setAttribute(
-                        "aria-pressed",
-                        String(activa)
-                    );
-                });
-            }
-        );
-    });
+                }
+            );
+        }
+    );
 
 
     /* =========================
@@ -510,7 +638,9 @@ function mostrarDetalleProducto(
     imagenElemento?.addEventListener(
         "click",
         () => {
-            if (!imagenElemento.src) {
+            if (
+                !imagenElemento.src
+            ) {
                 return;
             }
 
@@ -547,12 +677,14 @@ function mostrarDetalleProducto(
        MOSTRAR DETALLE
     ========================= */
 
-    sections.forEach(section => {
-        section.classList.toggle(
-            "active",
-            section === detalle
-        );
-    });
+    sections.forEach(
+        section => {
+            section.classList.toggle(
+                "active",
+                section === detalle
+            );
+        }
+    );
 
     activarTabVisual(
         "catalogo"
@@ -602,10 +734,6 @@ function abrirDetallePorCodigo(
         return;
     }
 
-    /*
-     * La categoría ya fue asignada al producto
-     * al cargar el catálogo.
-     */
     categoriaActual =
         String(
             producto.categoria ?? ""
@@ -638,237 +766,259 @@ function renderizarCatalogo(
 
     let categoria = "";
 
-    productos.forEach(producto => {
+    productos.forEach(
+        producto => {
 
-        /*
-         * Detectamos una nueva categoría.
-         */
-        if (esCategoria(producto)) {
-            categoria =
+            if (esCategoria(producto)) {
+                categoria =
+                    String(
+                        producto["Cod."] ??
+                            ""
+                    ).trim();
+
+                return;
+            }
+
+            const codigo =
                 String(
-                    producto["Cod."] ?? ""
+                    producto["Cod."] ??
+                        ""
                 ).trim();
 
-            return;
-        }
+            const nombre =
+                String(
+                    producto.nombre ??
+                        ""
+                ).trim();
 
-        const codigo =
-            String(
-                producto["Cod."] ?? ""
-            ).trim();
+            if (!nombre) {
+                return;
+            }
 
-        const nombre =
-            String(
-                producto.nombre ?? ""
-            ).trim();
+            /*
+             * Guardamos la categoría
+             * dentro del producto.
+             */
+            producto.categoria =
+                categoria;
 
-        if (!nombre) {
-            return;
-        }
+            const precio =
+                formatoPrecio(
+                    producto.Precio
+                );
 
-        /*
-         * Guardamos la categoría dentro
-         * del propio objeto producto.
-         */
-        producto.categoria =
-            categoria;
+            const precioTachado =
+                formatoPrecio(
+                    producto[
+                        "precio tachado"
+                    ]
+                );
 
-        const precio =
-            formatoPrecio(
-                producto.Precio
+            const descuento =
+                calcularDescuento(
+                    producto.Precio,
+                    producto[
+                        "precio tachado"
+                    ]
+                );
+
+            const descripcion =
+                String(
+                    producto.descripcion ??
+                        ""
+                ).trim();
+
+            const imagen =
+                obtenerImagenPrincipal(
+                    producto
+                );
+
+            const tarjeta =
+                document.createElement(
+                    "article"
+                );
+
+            tarjeta.className =
+                "product-card";
+
+            tarjeta.dataset.productId =
+                codigo;
+
+            tarjeta.setAttribute(
+                "role",
+                "button"
             );
 
-        const precioTachado =
-            formatoPrecio(
-                producto["precio tachado"]
+            tarjeta.setAttribute(
+                "tabindex",
+                "0"
             );
 
-        const descripcion =
-            String(
-                producto.descripcion ?? ""
-            ).trim();
-
-        const imagen =
-            obtenerImagenPrincipal(
-                producto
+            tarjeta.setAttribute(
+                "aria-label",
+                `Ver detalle de ${nombre}`
             );
 
-        const tarjeta =
-            document.createElement(
-                "article"
-            );
-
-        tarjeta.className =
-            "product-card";
-
-        tarjeta.dataset.productId =
-            codigo;
-
-        tarjeta.setAttribute(
-            "role",
-            "button"
-        );
-
-        tarjeta.setAttribute(
-            "tabindex",
-            "0"
-        );
-
-        tarjeta.setAttribute(
-            "aria-label",
-            `Ver detalle de ${nombre}`
-        );
-
-        tarjeta.innerHTML = `
-            <div class="product-image-wrapper">
-                <img
-                    class="product-image"
-                    src="${escapeHTML(imagen)}"
-                    alt="${escapeHTML(nombre)}"
-                    loading="lazy"
-                >
-            </div>
-
-            <div class="product-info">
-
-                ${
-                    categoria
-                        ? `
-                            <span class="product-category">
-                                ${escapeHTML(
-                                    categoria
-                                )}
-                            </span>
-                        `
-                        : ""
-                }
-
-                ${
-                    codigo
-                        ? `
-                            <span class="product-code">
-                                ${escapeHTML(
-                                    codigo
-                                )}
-                            </span>
-                        `
-                        : ""
-                }
-
-                <h3 class="product-name">
-                    ${escapeHTML(nombre)}
-                </h3>
-
-                <div class="product-prices">
+            tarjeta.innerHTML = `
+                <div class="product-image-wrapper">
 
                     ${
-                        precio
+                        descuento
                             ? `
-                                <span class="product-price">
-                                    ${escapeHTML(
-                                        precio
-                                    )}
+                                <span class="product-discount">
+                                    -${descuento}%
                                 </span>
                             `
                             : ""
                     }
 
-                    ${
-                        precioTachado
-                            ? `
-                                <span class="product-old-price">
-                                    ${escapeHTML(
-                                        precioTachado
-                                    )}
-                                </span>
-                            `
-                            : ""
-                    }
+                    <img
+                        class="product-image"
+                        src="${escapeHTML(
+                            imagen
+                        )}"
+                        alt="${escapeHTML(
+                            nombre
+                        )}"
+                        loading="lazy"
+                    >
 
                 </div>
 
-                ${
-                    descripcion
-                        ? `
-                            <p class="product-description">
-                                ${escapeHTML(
-                                    descripcion
-                                )}
-                            </p>
-                        `
-                        : ""
+                <div class="product-info">
+
+                    ${
+                        categoria
+                            ? `
+                                <span class="product-category">
+                                    ${escapeHTML(
+                                        categoria
+                                    )}
+                                </span>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        codigo
+                            ? `
+                                <span class="product-code">
+                                    ${escapeHTML(
+                                        codigo
+                                    )}
+                                </span>
+                            `
+                            : ""
+                    }
+
+                    <h3 class="product-name">
+                        ${escapeHTML(
+                            nombre
+                        )}
+                    </h3>
+
+                    <div class="product-prices">
+
+                        ${
+                            precio
+                                ? `
+                                    <span class="product-price">
+                                        ${escapeHTML(
+                                            precio
+                                        )}
+                                    </span>
+                                `
+                                : ""
+                        }
+
+                        ${
+                            precioTachado
+                                ? `
+                                    <span class="product-old-price">
+                                        ${escapeHTML(
+                                            precioTachado
+                                        )}
+                                    </span>
+                                `
+                                : ""
+                        }
+
+                    </div>
+
+                    ${
+                        descuento
+                            ? `
+                                <span class="product-saving">
+                                    Ahorrás un ${descuento}%
+                                </span>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        descripcion
+                            ? `
+                                <p class="product-description">
+                                    ${escapeHTML(
+                                        descripcion
+                                    )}
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    <a
+                        class="product-whatsapp"
+                        href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                            `Info de ${nombre} ${codigo}.`
+                        )}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Consultar ${escapeHTML(
+                            nombre
+                        )} por WhatsApp"
+                    >
+                        <i class="fa-brands fa-whatsapp"></i>
+                        Consultar
+                    </a>
+
+                </div>
+            `;
+
+
+            /* =========================
+               FALLBACK IMAGEN
+            ========================= */
+
+            const imagenElemento =
+                tarjeta.querySelector(
+                    ".product-image"
+                );
+
+            imagenElemento?.addEventListener(
+                "error",
+                () => {
+                    if (
+                        imagenElemento.src.endsWith(
+                            PLACEHOLDER_IMAGE
+                        )
+                    ) {
+                        return;
+                    }
+
+                    imagenElemento.src =
+                        PLACEHOLDER_IMAGE;
                 }
-
-                <a
-                    class="product-whatsapp"
-                    href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                        `Info de ${nombre} ${codigo}.`
-                    )}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Consultar ${escapeHTML(
-                        nombre
-                    )} por WhatsApp"
-                >
-                    <i class="fa-brands fa-whatsapp"></i>
-                    Consultar
-                </a>
-
-            </div>
-        `;
-
-
-        /* =========================
-           FALLBACK IMAGEN TARJETA
-        ========================= */
-
-        const imagenElemento =
-            tarjeta.querySelector(
-                ".product-image"
             );
 
-        imagenElemento?.addEventListener(
-            "error",
-            () => {
-                if (
-                    imagenElemento.src.endsWith(
-                        PLACEHOLDER_IMAGE
-                    )
-                ) {
-                    return;
-                }
 
-                imagenElemento.src =
-                    PLACEHOLDER_IMAGE;
-            }
-        );
+            /* =========================
+               ABRIR DETALLE
+            ========================= */
 
-
-        /* =========================
-           ABRIR DETALLE
-        ========================= */
-
-        tarjeta.addEventListener(
-            "click",
-            () => {
-                categoriaActual =
-                    producto.categoria;
-
-                mostrarDetalleProducto(
-                    producto
-                );
-            }
-        );
-
-        tarjeta.addEventListener(
-            "keydown",
-            event => {
-                if (
-                    event.key === "Enter" ||
-                    event.key === " "
-                ) {
-                    event.preventDefault();
-
+            tarjeta.addEventListener(
+                "click",
+                () => {
                     categoriaActual =
                         producto.categoria;
 
@@ -876,31 +1026,51 @@ function renderizarCatalogo(
                         producto
                     );
                 }
-            }
-        );
-
-
-        /* =========================
-           WHATSAPP
-        ========================= */
-
-        const whatsapp =
-            tarjeta.querySelector(
-                ".product-whatsapp"
             );
 
-        whatsapp?.addEventListener(
-            "click",
-            event => {
-                event.stopPropagation();
-            }
-        );
+            tarjeta.addEventListener(
+                "keydown",
+                event => {
+                    if (
+                        event.key ===
+                            "Enter" ||
+                        event.key === " "
+                    ) {
+                        event.preventDefault();
+
+                        categoriaActual =
+                            producto.categoria;
+
+                        mostrarDetalleProducto(
+                            producto
+                        );
+                    }
+                }
+            );
 
 
-        contenedor.appendChild(
-            tarjeta
-        );
-    });
+            /* =========================
+               WHATSAPP
+            ========================= */
+
+            const whatsapp =
+                tarjeta.querySelector(
+                    ".product-whatsapp"
+                );
+
+            whatsapp?.addEventListener(
+                "click",
+                event => {
+                    event.stopPropagation();
+                }
+            );
+
+
+            contenedor.appendChild(
+                tarjeta
+            );
+        }
+    );
 }
 
 
@@ -937,12 +1107,6 @@ async function cargarCatalogo() {
             productosCatalogo
         );
 
-        /*
-         * Ahora que cada producto ya tiene
-         * su categoría asignada, podemos
-         * resolver correctamente un producto
-         * abierto directamente mediante hash.
-         */
         manejarHash();
 
     } catch (error) {
@@ -972,6 +1136,7 @@ document
         "click",
         () => {
             cerrarLightbox();
+
             activateTab(
                 "catalogo"
             );
@@ -983,16 +1148,18 @@ document
    TABS
 ========================= */
 
-tabs.forEach(tab => {
-    tab.addEventListener(
-        "click",
-        () => {
-            activateTab(
-                tab.dataset.target
-            );
-        }
-    );
-});
+tabs.forEach(
+    tab => {
+        tab.addEventListener(
+            "click",
+            () => {
+                activateTab(
+                    tab.dataset.target
+                );
+            }
+        );
+    }
+);
 
 
 /* =========================
@@ -1002,7 +1169,9 @@ tabs.forEach(tab => {
 function manejarHash() {
     const hash =
         decodeURIComponent(
-            window.location.hash.slice(1)
+            window.location.hash.slice(
+                1
+            )
         );
 
     if (
