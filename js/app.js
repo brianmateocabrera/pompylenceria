@@ -59,6 +59,24 @@ function obtenerImagenPrincipal(producto) {
     return `${IMAGES_PATH}${imagen}`;
 }
 
+function obtenerImagenesProducto(producto) {
+    const claves = [
+        "imagen1",
+        "imagen2",
+        "imagen3",
+        "imagen 4",
+        "imagen 5",
+        "imagen 6",
+        "imagen 7",
+        "imagen 8"
+    ];
+
+    return claves
+        .map(clave => String(producto[clave] ?? "").trim())
+        .filter(Boolean)
+        .map(nombre => `${IMAGES_PATH}${nombre}`);
+}
+
 
 /* =========================
    NAVEGACIÓN PRINCIPAL
@@ -109,46 +127,130 @@ function activateTab(targetId, updateUrl = true) {
 ========================= */
 
 function mostrarDetalleProducto(producto, updateUrl = true) {
-    const detalle = document.getElementById("detalle-producto");
-    const contenido = document.getElementById("detalle-contenido");
+    const detalle = document.getElementById(
+        "detalle-producto"
+    );
+
+    const contenido = document.getElementById(
+        "detalle-contenido"
+    );
 
     if (!detalle || !contenido || !producto) {
         return;
     }
 
-    const codigo = String(producto["Cod."] ?? "").trim();
-    const nombre = String(producto.nombre ?? "").trim();
-    const descripcion = String(producto.descripcion ?? "").trim();
-    const precio = formatoPrecio(producto.Precio);
-    const precioTachado = formatoPrecio(producto["precio tachado"]);
-    const imagen = obtenerImagenPrincipal(producto);
+    const codigo = String(
+        producto["Cod."] ?? ""
+    ).trim();
+
+    const nombre = String(
+        producto.nombre ?? ""
+    ).trim();
+
+    const descripcion = String(
+        producto.descripcion ?? ""
+    ).trim();
+
+    const precio = formatoPrecio(
+        producto.Precio
+    );
+
+    const precioTachado = formatoPrecio(
+        producto["precio tachado"]
+    );
+
+    const imagenes = obtenerImagenesProducto(
+        producto
+    );
 
     contenido.innerHTML = `
         <article class="product-detail">
 
-            <div class="product-detail-image-wrapper">
-                <img
-                    class="product-detail-image"
-                    src="${escapeHTML(imagen)}"
-                    alt="${escapeHTML(nombre)}"
-                >
+            <div class="product-detail-gallery">
+
+                <div class="product-detail-image-wrapper">
+                    <img
+                        class="product-detail-image"
+                        src="${escapeHTML(
+                            imagenes[0] ||
+                            PLACEHOLDER_IMAGE
+                        )}"
+                        alt="${escapeHTML(nombre)}"
+                    >
+                </div>
+
+                ${
+                    imagenes.length > 1
+                        ? `
+                            <div
+                                class="product-detail-thumbnails"
+                                aria-label="Imágenes del producto"
+                            >
+                                ${imagenes
+                                    .map(
+                                        (
+                                            imagen,
+                                            indice
+                                        ) => `
+                                            <button
+                                                class="product-detail-thumbnail ${
+                                                    indice ===
+                                                    0
+                                                        ? "active"
+                                                        : ""
+                                                }"
+                                                type="button"
+                                                data-image="${escapeHTML(
+                                                    imagen
+                                                )}"
+                                                aria-label="Ver imagen ${
+                                                    indice +
+                                                    1
+                                                }"
+                                                aria-pressed="${
+                                                    indice ===
+                                                    0
+                                                }"
+                                            >
+                                                <img
+                                                    src="${escapeHTML(
+                                                        imagen
+                                                    )}"
+                                                    alt=""
+                                                    loading="lazy"
+                                                >
+                                            </button>
+                                        `
+                                    )
+                                    .join("")}
+                            </div>
+                        `
+                        : ""
+                }
+
             </div>
 
             <div class="product-detail-info">
 
                 ${
                     categoriaActual
-                        ? `<span class="product-detail-category">
-                            ${escapeHTML(categoriaActual)}
-                        </span>`
+                        ? `
+                            <span class="product-detail-category">
+                                ${escapeHTML(
+                                    categoriaActual
+                                )}
+                            </span>
+                        `
                         : ""
                 }
 
                 ${
                     codigo
-                        ? `<span class="product-detail-code">
-                            ${escapeHTML(codigo)}
-                        </span>`
+                        ? `
+                            <span class="product-detail-code">
+                                ${escapeHTML(codigo)}
+                            </span>
+                        `
                         : ""
                 }
 
@@ -157,28 +259,40 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
                 </h2>
 
                 <div class="product-detail-prices">
+
                     ${
                         precio
-                            ? `<span class="product-detail-price">
-                                ${escapeHTML(precio)}
-                            </span>`
+                            ? `
+                                <span class="product-detail-price">
+                                    ${escapeHTML(precio)}
+                                </span>
+                            `
                             : ""
                     }
 
                     ${
                         precioTachado
-                            ? `<span class="product-detail-old-price">
-                                ${escapeHTML(precioTachado)}
-                            </span>`
+                            ? `
+                                <span class="product-detail-old-price">
+                                    ${escapeHTML(
+                                        precioTachado
+                                    )}
+                                </span>
+                            `
                             : ""
                     }
+
                 </div>
 
                 ${
                     descripcion
-                        ? `<p class="product-detail-description">
-                            ${escapeHTML(descripcion)}
-                        </p>`
+                        ? `
+                            <p class="product-detail-description">
+                                ${escapeHTML(
+                                    descripcion
+                                )}
+                            </p>
+                        `
                         : ""
                 }
 
@@ -199,21 +313,82 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
         </article>
     `;
 
-    const imagenElemento = contenido.querySelector(
-        ".product-detail-image"
+    const imagenElemento =
+        contenido.querySelector(
+            ".product-detail-image"
+        );
+
+    const miniaturas =
+        contenido.querySelectorAll(
+            ".product-detail-thumbnail"
+        );
+
+    /* =========================
+       MINIATURAS
+    ========================= */
+
+    miniaturas.forEach(miniatura => {
+        const imagenMiniatura =
+            miniatura.querySelector("img");
+
+        imagenMiniatura.addEventListener(
+            "error",
+            () => {
+                imagenMiniatura.src =
+                    PLACEHOLDER_IMAGE;
+            }
+        );
+
+        miniatura.addEventListener(
+            "click",
+            () => {
+                const nuevaImagen =
+                    miniatura.dataset.image;
+
+                imagenElemento.src =
+                    nuevaImagen;
+
+                miniaturas.forEach(item => {
+                    const activa =
+                        item === miniatura;
+
+                    item.classList.toggle(
+                        "active",
+                        activa
+                    );
+
+                    item.setAttribute(
+                        "aria-pressed",
+                        activa
+                    );
+                });
+            }
+        );
+    });
+
+    /* =========================
+       FALLBACK IMAGEN PRINCIPAL
+    ========================= */
+
+    imagenElemento.addEventListener(
+        "error",
+        () => {
+            if (
+                imagenElemento.src.endsWith(
+                    PLACEHOLDER_IMAGE
+                )
+            ) {
+                return;
+            }
+
+            imagenElemento.src =
+                PLACEHOLDER_IMAGE;
+        }
     );
 
-    imagenElemento.addEventListener("error", () => {
-        if (
-            imagenElemento.src.endsWith(
-                PLACEHOLDER_IMAGE
-            )
-        ) {
-            return;
-        }
-
-        imagenElemento.src = PLACEHOLDER_IMAGE;
-    });
+    /* =========================
+       MOSTRAR DETALLE
+    ========================= */
 
     sections.forEach(section => {
         section.classList.toggle(
@@ -222,52 +397,73 @@ function mostrarDetalleProducto(producto, updateUrl = true) {
         );
     });
 
-    // El detalle pertenece al flujo del catálogo.
+    // El detalle pertenece al catálogo.
     activarTabVisual("catalogo");
 
-    localStorage.setItem("activeTab", "catalogo");
+    localStorage.setItem(
+        "activeTab",
+        "catalogo"
+    );
 
     if (updateUrl) {
         history.pushState(
             null,
             "",
-            `#producto-${encodeURIComponent(codigo)}`
+            `#producto-${encodeURIComponent(
+                codigo
+            )}`
         );
     }
 }
 
-function abrirDetallePorCodigo(codigo, updateUrl = false) {
-    const producto = productosCatalogo.find(
-        item =>
-            String(item["Cod."] ?? "").trim() ===
-            String(codigo).trim()
-    );
+function abrirDetallePorCodigo(
+    codigo,
+    updateUrl = false
+) {
+    const producto =
+        productosCatalogo.find(
+            item =>
+                String(
+                    item["Cod."] ?? ""
+                ).trim() ===
+                String(codigo).trim()
+        );
 
     if (!producto) {
-        activateTab("catalogo", updateUrl);
+        activateTab(
+            "catalogo",
+            updateUrl
+        );
+
         return;
     }
 
-    // Recuperar la categoría correspondiente al producto.
     categoriaActual = "";
 
     for (const item of productosCatalogo) {
         if (esCategoria(item)) {
-            categoriaActual = String(
-                item["Cod."] ?? ""
-            ).trim();
+            categoriaActual =
+                String(
+                    item["Cod."] ?? ""
+                ).trim();
+
             continue;
         }
 
         if (
-            String(item["Cod."] ?? "").trim() ===
+            String(
+                item["Cod."] ?? ""
+            ).trim() ===
             String(codigo).trim()
         ) {
             break;
         }
     }
 
-    mostrarDetalleProducto(producto, updateUrl);
+    mostrarDetalleProducto(
+        producto,
+        updateUrl
+    );
 }
 
 
@@ -276,9 +472,10 @@ function abrirDetallePorCodigo(codigo, updateUrl = false) {
 ========================= */
 
 function renderizarCatalogo(productos) {
-    const contenedor = document.getElementById(
-        "catalogo-productos"
-    );
+    const contenedor =
+        document.getElementById(
+            "catalogo-productos"
+        );
 
     if (!contenedor) {
         return;
@@ -313,26 +510,41 @@ function renderizarCatalogo(productos) {
             producto.Precio
         );
 
-        const precioTachado = formatoPrecio(
-            producto["precio tachado"]
-        );
+        const precioTachado =
+            formatoPrecio(
+                producto["precio tachado"]
+            );
 
         const descripcion = String(
             producto.descripcion ?? ""
         ).trim();
 
-        const imagen = obtenerImagenPrincipal(
-            producto
+        const imagen =
+            obtenerImagenPrincipal(
+                producto
+            );
+
+        const tarjeta =
+            document.createElement(
+                "article"
+            );
+
+        tarjeta.className =
+            "product-card";
+
+        tarjeta.dataset.productId =
+            codigo;
+
+        tarjeta.setAttribute(
+            "role",
+            "button"
         );
 
-        const tarjeta = document.createElement(
-            "article"
+        tarjeta.setAttribute(
+            "tabindex",
+            "0"
         );
 
-        tarjeta.className = "product-card";
-        tarjeta.dataset.productId = codigo;
-        tarjeta.setAttribute("role", "button");
-        tarjeta.setAttribute("tabindex", "0");
         tarjeta.setAttribute(
             "aria-label",
             `Ver detalle de ${nombre}`
@@ -352,17 +564,25 @@ function renderizarCatalogo(productos) {
 
                 ${
                     categoria
-                        ? `<span class="product-category">
-                            ${escapeHTML(categoria)}
-                        </span>`
+                        ? `
+                            <span class="product-category">
+                                ${escapeHTML(
+                                    categoria
+                                )}
+                            </span>
+                        `
                         : ""
                 }
 
                 ${
                     codigo
-                        ? `<span class="product-code">
-                            ${escapeHTML(codigo)}
-                        </span>`
+                        ? `
+                            <span class="product-code">
+                                ${escapeHTML(
+                                    codigo
+                                )}
+                            </span>
+                        `
                         : ""
                 }
 
@@ -374,17 +594,25 @@ function renderizarCatalogo(productos) {
 
                     ${
                         precio
-                            ? `<span class="product-price">
-                                ${escapeHTML(precio)}
-                            </span>`
+                            ? `
+                                <span class="product-price">
+                                    ${escapeHTML(
+                                        precio
+                                    )}
+                                </span>
+                            `
                             : ""
                     }
 
                     ${
                         precioTachado
-                            ? `<span class="product-old-price">
-                                ${escapeHTML(precioTachado)}
-                            </span>`
+                            ? `
+                                <span class="product-old-price">
+                                    ${escapeHTML(
+                                        precioTachado
+                                    )}
+                                </span>
+                            `
                             : ""
                     }
 
@@ -392,9 +620,13 @@ function renderizarCatalogo(productos) {
 
                 ${
                     descripcion
-                        ? `<p class="product-description">
-                            ${escapeHTML(descripcion)}
-                        </p>`
+                        ? `
+                            <p class="product-description">
+                                ${escapeHTML(
+                                    descripcion
+                                )}
+                            </p>
+                        `
                         : ""
                 }
 
@@ -405,7 +637,9 @@ function renderizarCatalogo(productos) {
                     )}"
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="Consultar ${escapeHTML(nombre)} por WhatsApp"
+                    aria-label="Consultar ${escapeHTML(
+                        nombre
+                    )} por WhatsApp"
                 >
                     <i class="fa-brands fa-whatsapp"></i>
                     Consultar
@@ -413,6 +647,10 @@ function renderizarCatalogo(productos) {
 
             </div>
         `;
+
+        /* =========================
+           IMAGEN DE TARJETA
+        ========================= */
 
         const imagenElemento =
             tarjeta.querySelector(
@@ -435,10 +673,21 @@ function renderizarCatalogo(productos) {
             }
         );
 
-        tarjeta.addEventListener("click", () => {
-            categoriaActual = categoria;
-            mostrarDetalleProducto(producto);
-        });
+        /* =========================
+           ABRIR DETALLE
+        ========================= */
+
+        tarjeta.addEventListener(
+            "click",
+            () => {
+                categoriaActual =
+                    categoria;
+
+                mostrarDetalleProducto(
+                    producto
+                );
+            }
+        );
 
         tarjeta.addEventListener(
             "keydown",
@@ -448,13 +697,21 @@ function renderizarCatalogo(productos) {
                     event.key === " "
                 ) {
                     event.preventDefault();
-                    categoriaActual = categoria;
-                    mostrarDetalleProducto(producto);
+
+                    categoriaActual =
+                        categoria;
+
+                    mostrarDetalleProducto(
+                        producto
+                    );
                 }
             }
         );
 
-        // Evita que el clic en WhatsApp abra también el detalle.
+        /* =========================
+           WHATSAPP
+        ========================= */
+
         const whatsapp =
             tarjeta.querySelector(
                 ".product-whatsapp"
@@ -467,23 +724,32 @@ function renderizarCatalogo(productos) {
             }
         );
 
-        contenedor.appendChild(tarjeta);
+        contenedor.appendChild(
+            tarjeta
+        );
     });
 }
 
+
+/* =========================
+   CARGAR CATÁLOGO
+========================= */
+
 async function cargarCatalogo() {
-    const contenedor = document.getElementById(
-        "catalogo-productos"
-    );
+    const contenedor =
+        document.getElementById(
+            "catalogo-productos"
+        );
 
     if (!contenedor) {
         return;
     }
 
     try {
-        const respuesta = await fetch(
-            PRODUCTOS_URL
-        );
+        const respuesta =
+            await fetch(
+                PRODUCTOS_URL
+            );
 
         if (!respuesta.ok) {
             throw new Error(
@@ -498,8 +764,8 @@ async function cargarCatalogo() {
             productosCatalogo
         );
 
-        // Si la URL ya apunta a un producto,
-        // abrirlo una vez cargado el JSON.
+        // Permite abrir directamente
+        // un producto indicado en la URL.
         manejarHash();
 
     } catch (error) {
@@ -523,9 +789,12 @@ async function cargarCatalogo() {
 
 document
     .getElementById("volver-catalogo")
-    ?.addEventListener("click", () => {
-        activateTab("catalogo");
-    });
+    ?.addEventListener(
+        "click",
+        () => {
+            activateTab("catalogo");
+        }
+    );
 
 
 /* =========================
@@ -533,11 +802,14 @@ document
 ========================= */
 
 tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-        activateTab(
-            tab.dataset.target
-        );
-    });
+    tab.addEventListener(
+        "click",
+        () => {
+            activateTab(
+                tab.dataset.target
+            );
+        }
+    );
 });
 
 
@@ -546,14 +818,16 @@ tabs.forEach(tab => {
 ========================= */
 
 function manejarHash() {
-    const hash = decodeURIComponent(
-        window.location.hash.slice(1)
-    );
+    const hash =
+        decodeURIComponent(
+            window.location.hash.slice(1)
+        );
 
     if (hash.startsWith("producto-")) {
-        const codigo = hash.slice(
-            "producto-".length
-        );
+        const codigo =
+            hash.slice(
+                "producto-".length
+            );
 
         if (productosCatalogo.length) {
             abrirDetallePorCodigo(
@@ -567,10 +841,15 @@ function manejarHash() {
 
     const target =
         hash ||
-        localStorage.getItem("activeTab") ||
+        localStorage.getItem(
+            "activeTab"
+        ) ||
         "portada";
 
-    activateTab(target, false);
+    activateTab(
+        target,
+        false
+    );
 }
 
 window.addEventListener(
