@@ -1,76 +1,31 @@
 const tabs = document.querySelectorAll(".tab-link");
 const sections = document.querySelectorAll(".content-section");
 
-function activateTab(targetId, updateUrl = true) {
-    const targetSection = document.getElementById(targetId);
-    const targetTab = document.querySelector(`[data-target="${targetId}"]`);
-
-    if (!targetSection || !targetTab) return;
-
-    tabs.forEach(tab => {
-        const active = tab === targetTab;
-
-        tab.classList.toggle("active", active);
-        tab.setAttribute("aria-selected", active);
-    });
-
-    sections.forEach(section => {
-        section.classList.toggle("active", section === targetSection);
-    });
-
-    localStorage.setItem("activeTab", targetId);
-
-    if (updateUrl) {
-        history.replaceState(null, "", `#${targetId}`);
-    }
-}
-
-tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-        activateTab(tab.dataset.target);
-    });
-});
-
-const initialTab =
-    window.location.hash.replace("#", "") ||
-    localStorage.getItem("activeTab") ||
-    "portada";
-
-activateTab(initialTab, false);
-
-window.addEventListener("hashchange", () => {
-    const target = window.location.hash.replace("#", "");
-    activateTab(target, false);
-});
-
-
-/* =========================
-   CATÁLOGO
-========================= */
-
-const catalogo = document.getElementById("catalogo-productos");
-
 const PRODUCTOS_URL = "data/productos.json";
 const IMAGES_PATH = "images/";
 const PLACEHOLDER_IMAGE = "images/no-image.webp";
+const WHATSAPP_NUMBER = "543518189444";
+
+let productosCatalogo = [];
+let categoriaActual = "";
 
 
-/* Escapa texto para evitar insertar HTML proveniente del JSON */
-function escapeHTML(texto) {
-    const elemento = document.createElement("div");
-    elemento.textContent = texto ?? "";
-    return elemento.innerHTML;
+/* =========================
+   UTILIDADES
+========================= */
+
+function escapeHTML(valor) {
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
-
-/* Formatea los precios como pesos argentinos */
-function formatoPrecio(precio) {
-    if (precio === "" || precio === null || precio === undefined) {
-        return "";
-    }
-
+function formatoPrecio(valor) {
     const numero = Number(
-        String(precio)
+        String(valor ?? "")
             .replace(/\./g, "")
             .replace(",", ".")
     );
@@ -86,34 +41,14 @@ function formatoPrecio(precio) {
     }).format(numero);
 }
 
-
-/*
- * Determina si una fila del JSON es una categoría.
- *
- * Ejemplo:
- * {
- *   "Cod.": "LENCERIA",
- *   "nombre": "",
- *   "Precio": "",
- *   ...
- * }
- */
 function esCategoria(producto) {
-    const codigo = String(producto["Cod."] ?? "").trim();
-    const nombre = String(producto["nombre"] ?? "").trim();
-    const precio = String(producto["Precio"] ?? "").trim();
-
     return (
-        codigo !== "" &&
-        nombre === "" &&
-        precio === ""
+        String(producto["Cod."] ?? "").trim() !== "" &&
+        String(producto.nombre ?? "").trim() === "" &&
+        String(producto.Precio ?? "").trim() === ""
     );
 }
 
-
-/*
- * Devuelve el nombre del archivo de la primera imagen
- */
 function obtenerImagenPrincipal(producto) {
     const imagen = String(producto["imagen1"] ?? "").trim();
 
@@ -124,194 +59,456 @@ function obtenerImagenPrincipal(producto) {
     return `${IMAGES_PATH}${imagen}`;
 }
 
-/* Crea una tarjeta de producto */
-function crearTarjeta(producto, categoria) {
-    const tarjeta = document.createElement("article");
 
-    tarjeta.className = "product-card";
+/* =========================
+   NAVEGACIÓN PRINCIPAL
+========================= */
+
+function activarTabVisual(targetId) {
+    tabs.forEach(tab => {
+        const active = tab.dataset.target === targetId;
+
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", active);
+    });
+}
+
+function activateTab(targetId, updateUrl = true) {
+    const targetSection = document.getElementById(targetId);
+    const targetTab = document.querySelector(
+        `[data-target="${targetId}"]`
+    );
+
+    if (!targetSection || !targetTab) {
+        return;
+    }
+
+    activarTabVisual(targetId);
+
+    sections.forEach(section => {
+        section.classList.toggle(
+            "active",
+            section === targetSection
+        );
+    });
+
+    localStorage.setItem("activeTab", targetId);
+
+    if (updateUrl) {
+        history.pushState(
+            null,
+            "",
+            `#${targetId}`
+        );
+    }
+}
+
+
+/* =========================
+   DETALLE DE PRODUCTO
+========================= */
+
+function mostrarDetalleProducto(producto, updateUrl = true) {
+    const detalle = document.getElementById("detalle-producto");
+    const contenido = document.getElementById("detalle-contenido");
+
+    if (!detalle || !contenido || !producto) {
+        return;
+    }
 
     const codigo = String(producto["Cod."] ?? "").trim();
-    const nombre = String(producto["nombre"] ?? "").trim();
-    const descripcion = String(producto["descripcion"] ?? "").trim();
-
-    const precio = formatoPrecio(producto["Precio"]);
+    const nombre = String(producto.nombre ?? "").trim();
+    const descripcion = String(producto.descripcion ?? "").trim();
+    const precio = formatoPrecio(producto.Precio);
     const precioTachado = formatoPrecio(producto["precio tachado"]);
-
     const imagen = obtenerImagenPrincipal(producto);
 
-    tarjeta.innerHTML = `
-        <div class="product-image-wrapper">
-            <img
-                class="product-image"
-                src="${escapeHTML(imagen)}"
-                alt="${escapeHTML(nombre)}"
-                loading="lazy"
-            >
-        </div>
+    contenido.innerHTML = `
+        <article class="product-detail">
 
-        <div class="product-info">
+            <div class="product-detail-image-wrapper">
+                <img
+                    class="product-detail-image"
+                    src="${escapeHTML(imagen)}"
+                    alt="${escapeHTML(nombre)}"
+                >
+            </div>
 
-            ${categoria
-                ? `<span class="product-category">
-                    ${escapeHTML(categoria)}
-                   </span>`
-                : ""
-            }
+            <div class="product-detail-info">
 
-            ${codigo
-                ? `<span class="product-code">
-                    ${escapeHTML(codigo)}
-                   </span>`
-                : ""
-            }
-
-            <h3 class="product-name">
-                ${escapeHTML(nombre)}
-            </h3>
-
-            <div class="product-prices">
-
-                ${precio
-                    ? `<span class="product-price">
-                        ${escapeHTML(precio)}
-                       </span>`
-                    : ""
+                ${
+                    categoriaActual
+                        ? `<span class="product-detail-category">
+                            ${escapeHTML(categoriaActual)}
+                        </span>`
+                        : ""
                 }
 
-                ${precioTachado
-                    ? `<span class="product-old-price">
-                        ${escapeHTML(precioTachado)}
-                       </span>`
-                    : ""
+                ${
+                    codigo
+                        ? `<span class="product-detail-code">
+                            ${escapeHTML(codigo)}
+                        </span>`
+                        : ""
                 }
+
+                <h2 class="product-detail-title">
+                    ${escapeHTML(nombre)}
+                </h2>
+
+                <div class="product-detail-prices">
+                    ${
+                        precio
+                            ? `<span class="product-detail-price">
+                                ${escapeHTML(precio)}
+                            </span>`
+                            : ""
+                    }
+
+                    ${
+                        precioTachado
+                            ? `<span class="product-detail-old-price">
+                                ${escapeHTML(precioTachado)}
+                            </span>`
+                            : ""
+                    }
+                </div>
+
+                ${
+                    descripcion
+                        ? `<p class="product-detail-description">
+                            ${escapeHTML(descripcion)}
+                        </p>`
+                        : ""
+                }
+
+                <a
+                    class="product-whatsapp"
+                    href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                        `Info de ${nombre} ${codigo}.`
+                    )}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Consultar
+                </a>
 
             </div>
 
-            ${descripcion
-                ? `<p class="product-description">
-                    ${escapeHTML(descripcion)}
-                   </p>`
-                : ""
-            }
-
-          ${`
-    <a
-        class="product-whatsapp"
-        href="https://wa.me/543518189444?text=${encodeURIComponent(
-            `Info de ${nombre} ${codigo}.`
-        )}"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Consultar ${escapeHTML(nombre)} por WhatsApp"
-    >
-        <i class="fa-brands fa-whatsapp"></i>
-        Consultar
-    </a>
-`}
-
-        </div>
+        </article>
     `;
 
-
-    /*
-     * Si la imagen indicada en el JSON no existe,
-     * se reemplaza automáticamente por no-image.webp.
-     */
-    const imagenElemento = tarjeta.querySelector(".product-image");
+    const imagenElemento = contenido.querySelector(
+        ".product-detail-image"
+    );
 
     imagenElemento.addEventListener("error", () => {
-        if (imagenElemento.src.endsWith(PLACEHOLDER_IMAGE)) {
+        if (
+            imagenElemento.src.endsWith(
+                PLACEHOLDER_IMAGE
+            )
+        ) {
             return;
         }
 
         imagenElemento.src = PLACEHOLDER_IMAGE;
     });
 
+    sections.forEach(section => {
+        section.classList.toggle(
+            "active",
+            section === detalle
+        );
+    });
 
-    return tarjeta;
+    // El detalle pertenece al flujo del catálogo.
+    activarTabVisual("catalogo");
+
+    localStorage.setItem("activeTab", "catalogo");
+
+    if (updateUrl) {
+        history.pushState(
+            null,
+            "",
+            `#producto-${encodeURIComponent(codigo)}`
+        );
+    }
+}
+
+function abrirDetallePorCodigo(codigo, updateUrl = false) {
+    const producto = productosCatalogo.find(
+        item =>
+            String(item["Cod."] ?? "").trim() ===
+            String(codigo).trim()
+    );
+
+    if (!producto) {
+        activateTab("catalogo", updateUrl);
+        return;
+    }
+
+    // Recuperar la categoría correspondiente al producto.
+    categoriaActual = "";
+
+    for (const item of productosCatalogo) {
+        if (esCategoria(item)) {
+            categoriaActual = String(
+                item["Cod."] ?? ""
+            ).trim();
+            continue;
+        }
+
+        if (
+            String(item["Cod."] ?? "").trim() ===
+            String(codigo).trim()
+        ) {
+            break;
+        }
+    }
+
+    mostrarDetalleProducto(producto, updateUrl);
 }
 
 
-/* Carga productos.json y genera el catálogo */
-async function cargarCatalogo() {
-    if (!catalogo) return;
+/* =========================
+   CATÁLOGO
+========================= */
 
-    try {
-        const respuesta = await fetch(PRODUCTOS_URL, {
-            cache: "no-store"
-        });
+function renderizarCatalogo(productos) {
+    const contenedor = document.getElementById(
+        "catalogo-productos"
+    );
 
-        if (!respuesta.ok) {
-            throw new Error(`Error HTTP ${respuesta.status}`);
-        }
+    if (!contenedor) {
+        return;
+    }
 
-        const productos = await respuesta.json();
+    contenedor.innerHTML = "";
 
-        if (!Array.isArray(productos)) {
-            throw new Error("productos.json no contiene un array válido.");
-        }
+    let categoria = "";
 
-        catalogo.innerHTML = "";
-
-        let categoriaActual = "";
-
-        productos.forEach(producto => {
-
-            /*
-             * Si encontramos una fila de categoría,
-             * actualizamos la categoría actual y no
-             * generamos ninguna tarjeta.
-             */
-            if (esCategoria(producto)) {
-                categoriaActual = String(
-                    producto["Cod."]
-                ).trim();
-
-                return;
-            }
-
-
-            /*
-             * Ignoramos filas que no tengan nombre.
-             */
-            const nombre = String(
-                producto["nombre"] ?? ""
+    productos.forEach(producto => {
+        if (esCategoria(producto)) {
+            categoria = String(
+                producto["Cod."] ?? ""
             ).trim();
 
-            if (!nombre) {
-                return;
-            }
-
-
-            /*
-             * Generamos la tarjeta usando la categoría
-             * que corresponde a ese producto.
-             */
-            const tarjeta = crearTarjeta(
-                producto,
-                categoriaActual
-            );
-
-            catalogo.appendChild(tarjeta);
-        });
-
-
-        if (catalogo.children.length === 0) {
-            catalogo.innerHTML = `
-                <p class="catalogo-estado">
-                    No hay productos para mostrar.
-                </p>
-            `;
+            return;
         }
 
-    } catch (error) {
+        const codigo = String(
+            producto["Cod."] ?? ""
+        ).trim();
 
+        const nombre = String(
+            producto.nombre ?? ""
+        ).trim();
+
+        if (!nombre) {
+            return;
+        }
+
+        const precio = formatoPrecio(
+            producto.Precio
+        );
+
+        const precioTachado = formatoPrecio(
+            producto["precio tachado"]
+        );
+
+        const descripcion = String(
+            producto.descripcion ?? ""
+        ).trim();
+
+        const imagen = obtenerImagenPrincipal(
+            producto
+        );
+
+        const tarjeta = document.createElement(
+            "article"
+        );
+
+        tarjeta.className = "product-card";
+        tarjeta.dataset.productId = codigo;
+        tarjeta.setAttribute("role", "button");
+        tarjeta.setAttribute("tabindex", "0");
+        tarjeta.setAttribute(
+            "aria-label",
+            `Ver detalle de ${nombre}`
+        );
+
+        tarjeta.innerHTML = `
+            <div class="product-image-wrapper">
+                <img
+                    class="product-image"
+                    src="${escapeHTML(imagen)}"
+                    alt="${escapeHTML(nombre)}"
+                    loading="lazy"
+                >
+            </div>
+
+            <div class="product-info">
+
+                ${
+                    categoria
+                        ? `<span class="product-category">
+                            ${escapeHTML(categoria)}
+                        </span>`
+                        : ""
+                }
+
+                ${
+                    codigo
+                        ? `<span class="product-code">
+                            ${escapeHTML(codigo)}
+                        </span>`
+                        : ""
+                }
+
+                <h3 class="product-name">
+                    ${escapeHTML(nombre)}
+                </h3>
+
+                <div class="product-prices">
+
+                    ${
+                        precio
+                            ? `<span class="product-price">
+                                ${escapeHTML(precio)}
+                            </span>`
+                            : ""
+                    }
+
+                    ${
+                        precioTachado
+                            ? `<span class="product-old-price">
+                                ${escapeHTML(precioTachado)}
+                            </span>`
+                            : ""
+                    }
+
+                </div>
+
+                ${
+                    descripcion
+                        ? `<p class="product-description">
+                            ${escapeHTML(descripcion)}
+                        </p>`
+                        : ""
+                }
+
+                <a
+                    class="product-whatsapp"
+                    href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                        `Info de ${nombre} ${codigo}.`
+                    )}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Consultar ${escapeHTML(nombre)} por WhatsApp"
+                >
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Consultar
+                </a>
+
+            </div>
+        `;
+
+        const imagenElemento =
+            tarjeta.querySelector(
+                ".product-image"
+            );
+
+        imagenElemento.addEventListener(
+            "error",
+            () => {
+                if (
+                    imagenElemento.src.endsWith(
+                        PLACEHOLDER_IMAGE
+                    )
+                ) {
+                    return;
+                }
+
+                imagenElemento.src =
+                    PLACEHOLDER_IMAGE;
+            }
+        );
+
+        tarjeta.addEventListener("click", () => {
+            categoriaActual = categoria;
+            mostrarDetalleProducto(producto);
+        });
+
+        tarjeta.addEventListener(
+            "keydown",
+            event => {
+                if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                ) {
+                    event.preventDefault();
+                    categoriaActual = categoria;
+                    mostrarDetalleProducto(producto);
+                }
+            }
+        );
+
+        // Evita que el clic en WhatsApp abra también el detalle.
+        const whatsapp =
+            tarjeta.querySelector(
+                ".product-whatsapp"
+            );
+
+        whatsapp.addEventListener(
+            "click",
+            event => {
+                event.stopPropagation();
+            }
+        );
+
+        contenedor.appendChild(tarjeta);
+    });
+}
+
+async function cargarCatalogo() {
+    const contenedor = document.getElementById(
+        "catalogo-productos"
+    );
+
+    if (!contenedor) {
+        return;
+    }
+
+    try {
+        const respuesta = await fetch(
+            PRODUCTOS_URL
+        );
+
+        if (!respuesta.ok) {
+            throw new Error(
+                `HTTP ${respuesta.status}`
+            );
+        }
+
+        productosCatalogo =
+            await respuesta.json();
+
+        renderizarCatalogo(
+            productosCatalogo
+        );
+
+        // Si la URL ya apunta a un producto,
+        // abrirlo una vez cargado el JSON.
+        manejarHash();
+
+    } catch (error) {
         console.error(
-            "No se pudo cargar el catálogo:",
+            "Error al cargar el catálogo:",
             error
         );
 
-        catalogo.innerHTML = `
+        contenedor.innerHTML = `
             <p class="catalogo-estado">
                 No se pudo cargar el catálogo.
             </p>
@@ -320,4 +517,76 @@ async function cargarCatalogo() {
 }
 
 
+/* =========================
+   VOLVER AL CATÁLOGO
+========================= */
+
+document
+    .getElementById("volver-catalogo")
+    ?.addEventListener("click", () => {
+        activateTab("catalogo");
+    });
+
+
+/* =========================
+   TABS
+========================= */
+
+tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+        activateTab(
+            tab.dataset.target
+        );
+    });
+});
+
+
+/* =========================
+   HASH / HISTORIAL
+========================= */
+
+function manejarHash() {
+    const hash = decodeURIComponent(
+        window.location.hash.slice(1)
+    );
+
+    if (hash.startsWith("producto-")) {
+        const codigo = hash.slice(
+            "producto-".length
+        );
+
+        if (productosCatalogo.length) {
+            abrirDetallePorCodigo(
+                codigo,
+                false
+            );
+        }
+
+        return;
+    }
+
+    const target =
+        hash ||
+        localStorage.getItem("activeTab") ||
+        "portada";
+
+    activateTab(target, false);
+}
+
+window.addEventListener(
+    "hashchange",
+    manejarHash
+);
+
+window.addEventListener(
+    "popstate",
+    manejarHash
+);
+
+
+/* =========================
+   INICIO
+========================= */
+
+manejarHash();
 cargarCatalogo();
