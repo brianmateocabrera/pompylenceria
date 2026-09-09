@@ -1,20 +1,5 @@
 /* =========================
-   RESPONSIVE GLOBAL
-   ========================= */
-
-/*
-   Los estilos específicos de:
-   - Header → header.css
-   - Catálogo → catalog.css
-   - Producto → product.css
-   - Componentes → components.css
-
-   se mantienen en sus respectivos archivos.
-   Este archivo solo contiene ajustes globales.
-*/
-
-/* =========================
-   TABLET
+   AJUSTES RESPONSIVE
    ========================= */
 
 @media (max-width: 999px) {
@@ -23,19 +8,11 @@
   }
 }
 
-/* =========================
-   CELULAR
-   ========================= */
-
 @media (max-width: 699px) {
   body {
     padding-bottom: 64px;
   }
 }
-
-/* =========================
-   CELULARES MUY CHICOS
-   ========================= */
 
 @media (max-width: 380px) {
   body {
