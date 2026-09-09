@@ -31,6 +31,44 @@ function mostrarEstado(mensaje) {
   `;
 }
 
+function mostrarSkeletonCatalogo(cantidad = 8) {
+  const contenedor = document.querySelector("#catalogo-productos");
+
+  if (!contenedor) {
+    return;
+  }
+
+  contenedor.innerHTML = "";
+
+  const fragment = document.createDocumentFragment();
+
+  for (let i = 0; i < cantidad; i += 1) {
+    const skeleton = document.createElement("article");
+
+    skeleton.className = "product-card product-card-skeleton";
+    skeleton.setAttribute("aria-hidden", "true");
+
+    skeleton.innerHTML = `
+      <div class="product-image-wrapper skeleton-block"></div>
+
+      <div class="product-info">
+        <div class="skeleton-line skeleton-name"></div>
+
+        <div class="skeleton-prices">
+          <span class="skeleton-line skeleton-price"></span>
+          <span class="skeleton-line skeleton-old-price"></span>
+        </div>
+
+        <div class="skeleton-line skeleton-button"></div>
+      </div>
+    `;
+
+    fragment.appendChild(skeleton);
+  }
+
+  contenedor.appendChild(fragment);
+}
+
 function obtenerProductosReales(productos) {
   const resultado = [];
   let categoriaActual = "";
@@ -527,7 +565,8 @@ export function renderizarCatalogo(productos) {
 }
 
 export async function cargarCatalogo() {
-  mostrarEstado("Cargando catálogo...");
+  mostrarSkeletonCatalogo();
+  crearToolbar();
 
   try {
     const response = await fetch(
@@ -554,7 +593,7 @@ export async function cargarCatalogo() {
     productosBase =
       obtenerProductosReales(productos);
 
-    crearToolbar();
+    actualizarCategorias();
     renderizarResultados();
 
     return productos;
