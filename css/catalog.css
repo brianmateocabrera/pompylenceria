@@ -6,12 +6,20 @@
   position: sticky;
   top: var(--site-header-height, 83px);
   z-index: 20;
-  margin-bottom: 20px;
-  padding: 12px;
+
+  margin-bottom: 22px;
+  padding: 13px;
+
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 16px;
+
   background: var(--surface);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-soft);
+
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
 }
 
 .catalog-toolbar-main {
@@ -20,6 +28,10 @@
   align-items: center;
   gap: 10px;
 }
+
+/* =========================
+   BUSCADOR
+   ========================= */
 
 .catalog-search {
   position: relative;
@@ -30,41 +42,79 @@
 .catalog-search input {
   width: 100%;
   min-height: 44px;
-  padding: 10px 42px 10px 14px;
+
+  padding: 10px 42px 10px 15px;
+
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 11px;
+
   background: var(--surface-soft);
   color: var(--text);
+
   font: inherit;
+
+  transition:
+    border-color var(--transition),
+    background-color var(--transition),
+    box-shadow var(--transition);
 }
 
 .catalog-search input::placeholder {
-  color: var(--text-soft);
+  color: var(--text-muted);
+}
+
+.catalog-search input:hover {
+  border-color: var(--text-muted);
 }
 
 .catalog-search input:focus {
   border-color: var(--accent);
   outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.10);
 }
 
 .catalog-search-icon {
   position: absolute;
   top: 50%;
   right: 14px;
-  color: var(--text-soft);
+
+  color: var(--text-muted);
+
   transform: translateY(-50%);
   pointer-events: none;
+
+  transition: color var(--transition);
 }
+
+.catalog-search:focus-within .catalog-search-icon {
+  color: var(--accent);
+}
+
+/* =========================
+   CONTROLES
+   ========================= */
 
 .catalog-control {
   min-height: 44px;
-  padding: 9px 12px;
+
+  padding: 9px 13px;
+
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 11px;
+
   background: var(--surface-soft);
   color: var(--text);
+
   font: inherit;
   cursor: pointer;
+
+  transition:
+    border-color var(--transition),
+    background-color var(--transition);
+}
+
+.catalog-control:hover {
+  border-color: var(--text-muted);
 }
 
 .catalog-control:focus {
@@ -78,33 +128,52 @@
   white-space: nowrap;
 }
 
+/* =========================
+   CATEGORÍAS
+   ========================= */
+
 .catalog-categories {
   display: flex;
+
   gap: 7px;
-  margin-top: 10px;
+  margin-top: 11px;
+
   overflow-x: auto;
-  padding-bottom: 2px;
+  padding: 1px 1px 3px;
+
   scrollbar-width: thin;
 }
 
 .catalog-category {
   flex: 0 0 auto;
+
   min-height: 36px;
-  padding: 8px 13px;
+  padding: 8px 14px;
+
   border: 1px solid var(--border);
   border-radius: 999px;
+
   background: transparent;
   color: var(--text-soft);
+
   font: inherit;
   font-size: 13px;
+
   cursor: pointer;
+
   transition:
-    background var(--transition),
+    background-color var(--transition),
     border-color var(--transition),
-    color var(--transition);
+    color var(--transition),
+    transform var(--transition);
 }
 
-.catalog-category:hover,
+.catalog-category:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
 .catalog-category.active {
   border-color: var(--accent);
   background: var(--accent);
@@ -122,13 +191,16 @@
 
 .catalogo-productos {
   display: grid;
+
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  gap: 20px;
 }
 
 .catalogo-estado {
   grid-column: 1 / -1;
-  padding: 40px 10px;
+
+  padding: 48px 10px;
+
   color: var(--text-soft);
   text-align: center;
 }
@@ -139,23 +211,36 @@
 
 .product-card {
   position: relative;
+
   display: flex;
   min-width: 0;
+
   flex-direction: column;
   overflow: hidden;
+
   border: 1px solid var(--border);
   border-radius: var(--radius);
+
   background: var(--surface);
+
   cursor: pointer;
+
   transition:
     transform var(--transition),
     border-color var(--transition),
-    box-shadow var(--transition);
+    box-shadow var(--transition),
+    background-color var(--transition);
 }
 
 .product-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--accent);
+  transform: translateY(-4px);
+
+  border-color: color-mix(
+    in srgb,
+    var(--accent) 55%,
+    var(--border)
+  );
+
   box-shadow: var(--shadow);
 }
 
@@ -164,113 +249,183 @@
   outline-offset: 3px;
 }
 
-/* Imagen */
+/* =========================
+   IMAGEN
+   ========================= */
 
 .product-image-wrapper {
   position: relative;
   overflow: hidden;
+
   aspect-ratio: 1 / 1;
+
   background: var(--surface-soft);
+
+  transition: background-color var(--transition);
+}
+
+.product-image-wrapper::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-bottom: 1px solid var(--border-soft);
+
+  pointer-events: none;
 }
 
 .product-image-wrapper img {
   display: block;
+
   width: 100%;
   height: 100%;
+
   object-fit: contain;
-  transition: transform 0.3s ease;
+
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity var(--transition);
 }
 
 .product-card:hover .product-image-wrapper img {
-  transform: scale(1.025);
+  transform: scale(1.035);
 }
 
-/* Badge */
+/* =========================
+   DESCUENTO
+   ========================= */
 
 .discount-badge {
   position: absolute;
-  top: 10px;
-  left: 10px;
+
+  top: 11px;
+  left: 11px;
   z-index: 2;
-  padding: 5px 9px;
+
+  padding: 6px 9px;
+
   border-radius: 999px;
+
   background: var(--accent);
   color: #111;
+
   font-size: 12px;
   font-weight: 700;
   line-height: 1;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
-/* Información */
+/* =========================
+   INFORMACIÓN
+   ========================= */
 
 .product-info {
   display: flex;
+
   flex: 1;
   flex-direction: column;
-  padding: 14px;
+
+  padding: 15px;
 }
 
 .product-name {
   display: -webkit-box;
+
   min-height: 46px;
+
   margin: 0 0 10px;
+
   overflow: hidden;
+
   color: var(--text);
+
+  font-family: var(--font-heading);
   font-size: 19px;
+  font-weight: 700;
   line-height: 1.2;
+
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+
+  transition: color var(--transition);
 }
 
 .product-prices {
   display: flex;
+
   flex-wrap: wrap;
   align-items: baseline;
+
   gap: 8px;
-  margin-bottom: 14px;
+
+  margin-bottom: 15px;
 }
 
 .product-price {
   color: var(--accent);
-  font-size: 21px;
+
+  font-family: var(--font-heading);
+  font-size: 22px;
   font-weight: 700;
+  line-height: 1;
 }
 
 .product-old-price {
-  color: var(--text-soft);
-  font-size: 13px;
+  color: var(--text-muted);
+
+  font-family: var(--font-heading);
+  font-size: 14px;
+
   text-decoration: line-through;
 }
 
-/* CTA */
+/* =========================
+   CTA WHATSAPP
+   ========================= */
 
 .product-whatsapp {
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   gap: 7px;
+
   width: 100%;
   min-height: 44px;
+
   margin-top: auto;
   padding: 10px 12px;
+
   border: 1px solid var(--accent);
-  border-radius: 10px;
+  border-radius: 11px;
+
   background: transparent;
   color: var(--accent);
-  font-size: 14px;
+
+  font-family: var(--font-heading);
+  font-size: 15px;
   font-weight: 700;
+
   text-align: center;
   text-decoration: none;
+
   transition:
-    background var(--transition),
+    background-color var(--transition),
     color var(--transition),
-    transform var(--transition);
+    transform var(--transition),
+    box-shadow var(--transition);
 }
 
 .product-whatsapp:hover {
   background: var(--accent);
   color: #111;
+
   transform: translateY(-1px);
+
+  box-shadow: 0 5px 15px rgba(255, 71, 87, 0.18);
 }
 
 .product-whatsapp:focus-visible {
@@ -283,13 +438,121 @@
 }
 
 /* =========================
+   SKELETON CATALOG
+   ========================= */
+
+.product-card-skeleton {
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+}
+
+.product-card-skeleton .product-image-wrapper {
+  position: relative;
+  overflow: hidden;
+
+  background: var(--surface-soft);
+}
+
+.skeleton-block,
+.skeleton-line {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--surface-soft),
+      var(--surface-hover)
+    );
+}
+
+.skeleton-block::after,
+.skeleton-line::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.045) 45%,
+      rgba(255, 255, 255, 0.085) 50%,
+      rgba(255, 255, 255, 0.045) 55%,
+      transparent 80%
+    );
+
+  transform: translateX(-120%);
+
+  animation: skeleton-shimmer 1.8s ease-in-out infinite;
+}
+
+.product-card-skeleton .product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.skeleton-name {
+  width: 76%;
+  height: 17px;
+
+  border-radius: 999px;
+}
+
+.skeleton-prices {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.skeleton-price {
+  width: 88px;
+  height: 21px;
+
+  border-radius: 999px;
+}
+
+.skeleton-old-price {
+  width: 62px;
+  height: 14px;
+
+  border-radius: 999px;
+  opacity: 0.65;
+}
+
+.skeleton-button {
+  width: 100%;
+  height: 40px;
+
+  margin-top: 5px;
+
+  border-radius: 999px;
+  opacity: 0.75;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  60%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+/* =========================
    TABLET
    ========================= */
 
 @media (max-width: 999px) {
   .catalogo-productos {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
+    gap: 15px;
   }
 
   .catalog-toolbar-main {
@@ -307,9 +570,10 @@
 
 @media (max-width: 699px) {
   .catalog-toolbar {
-    margin-bottom: 14px;
+    margin-bottom: 15px;
     padding: 9px;
-    border-radius: 12px;
+
+    border-radius: 13px;
   }
 
   .catalog-toolbar-main {
@@ -338,12 +602,13 @@
   .catalog-category {
     min-height: 34px;
     padding: 7px 11px;
+
     font-size: 12px;
   }
 
   .catalogo-productos {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    gap: 11px;
   }
 
   .product-info {
@@ -352,7 +617,9 @@
 
   .product-name {
     min-height: 40px;
+
     margin-bottom: 8px;
+
     font-size: 16px;
   }
 
@@ -362,7 +629,7 @@
   }
 
   .product-price {
-    font-size: 18px;
+    font-size: 19px;
   }
 
   .product-old-price {
@@ -371,14 +638,18 @@
 
   .product-whatsapp {
     min-height: 42px;
+
     padding: 9px 8px;
+
     font-size: 13px;
   }
 
   .discount-badge {
     top: 7px;
     left: 7px;
-    padding: 4px 7px;
+
+    padding: 5px 7px;
+
     font-size: 11px;
   }
 }
@@ -410,103 +681,17 @@
 }
 
 /* =========================
-   SKELETON CATALOG — AESTHETIC
+   REDUCED MOTION
    ========================= */
 
-.product-card-skeleton {
-  pointer-events: none;
-  user-select: none;
-  overflow: hidden;
-}
-
-.product-card-skeleton .product-image-wrapper {
-  position: relative;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.045);
-}
-
-.skeleton-block,
-.skeleton-line {
-  position: relative;
-  overflow: hidden;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.035),
-      rgba(255, 255, 255, 0.075)
-    );
-}
-
-.skeleton-block::after,
-.skeleton-line::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background: linear-gradient(
-    105deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.055) 45%,
-    rgba(255, 255, 255, 0.09) 50%,
-    rgba(255, 255, 255, 0.055) 55%,
-    transparent 80%
-  );
-
-  transform: translateX(-120%);
-  animation: skeleton-shimmer 1.8s ease-in-out infinite;
-}
-
-.product-card-skeleton .product-info {
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-}
-
-.skeleton-name {
-  width: 76%;
-  height: 17px;
-  border-radius: 999px;
-}
-
-.skeleton-prices {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.skeleton-price {
-  width: 88px;
-  height: 21px;
-  border-radius: 999px;
-}
-
-.skeleton-old-price {
-  width: 62px;
-  height: 14px;
-  border-radius: 999px;
-  opacity: 0.65;
-}
-
-.skeleton-button {
-  width: 100%;
-  height: 40px;
-  margin-top: 5px;
-  border-radius: 999px;
-  opacity: 0.75;
-}
-
-@keyframes skeleton-shimmer {
-  0% {
-    transform: translateX(-120%);
-  }
-
-  60%,
-  100% {
-    transform: translateX(120%);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
+  .product-card,
+  .product-image-wrapper img,
+  .product-whatsapp,
+  .catalog-category {
+    transition: none;
+  }
+
   .skeleton-block::after,
   .skeleton-line::after {
     animation: none;
