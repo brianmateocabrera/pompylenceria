@@ -8,6 +8,7 @@ import {
   abrirDetallePorCodigo
 } from "./products.js";
 import { cargarCatalogo } from "./catalog.js";
+import { inicializarTema } from "./theme.js";
 
 function manejarHash() {
   const hash = decodeURIComponent(
@@ -33,6 +34,7 @@ function manejarHash() {
 }
 
 function inicializar() {
+  inicializarTema();
   inicializarGallery();
 
   inicializarNavegacion(() => {
