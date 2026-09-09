@@ -295,13 +295,13 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
           }
         </div>
 
+                ${crearBotonWhatsApp(producto)}
+
         ${
           descripcion
             ? `<p class="detail-description">${escapeHTML(descripcion)}</p>`
             : ""
         }
-
-        ${crearBotonWhatsApp(producto)}
       </div>
     </div>
 
