@@ -63,6 +63,31 @@ function crearImagenErrorHandler() {
   };
 }
 
+function crearSkeletonDetalle() {
+  return `
+    <div class="product-detail-skeleton" aria-hidden="true">
+      <div class="detail-skeleton-gallery">
+        <div class="skeleton-block detail-skeleton-image"></div>
+
+        <div class="detail-skeleton-thumbnails">
+          <div class="skeleton-block detail-skeleton-thumb"></div>
+          <div class="skeleton-block detail-skeleton-thumb"></div>
+          <div class="skeleton-block detail-skeleton-thumb"></div>
+          <div class="skeleton-block detail-skeleton-thumb"></div>
+          <div class="skeleton-block detail-skeleton-thumb"></div>
+        </div>
+      </div>
+
+      <div class="detail-skeleton-info">
+        <div class="skeleton-line detail-skeleton-title"></div>
+        <div class="skeleton-line detail-skeleton-price"></div>
+        <div class="skeleton-line detail-skeleton-button"></div>
+        <div class="skeleton-line detail-skeleton-description"></div>
+      </div>
+    </div>
+  `;
+}
+
 function crearHTMLRelacionado(productos) {
   if (!productos.length) {
     return "";
@@ -221,13 +246,9 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
 
   const codigo = obtenerCodigo(producto);
   const nombre = obtenerNombre(producto);
-  const categoria = String(producto.categoria ?? "").trim();
   const descripcion = String(producto.descripcion ?? "").trim();
-
   const precio = formatoPrecio(producto.Precio);
-  const precioAnterior = formatoPrecio(
-    producto["precio tachado"]
-  );
+  const precioAnterior = formatoPrecio(producto["precio tachado"]);
 
   const descuento = calcularDescuento(
     producto.Precio,
@@ -240,137 +261,125 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
 
   const relacionados = obtenerProductosRelacionados(producto);
 
-  const thumbnails = imagenes
-    .map((imagen, index) => {
-      const activo = index === 0;
+  // Mostrar skeleton durante la preparación de la ficha.
+  contenido.classList.add("detail-loading");
+  contenido.innerHTML = crearSkeletonDetalle();
 
-      return `
-        <button
-          class="detail-thumbnail${activo ? " active" : ""}"
-          type="button"
-          aria-label="Ver imagen ${index + 1}"
-          aria-pressed="${activo}"
-        >
-          <img
-            src="${escapeHTML(imagen)}"
-            alt="${escapeHTML(nombre)}"
-            loading="lazy"
-            decoding="async"
+  requestAnimationFrame(() => {
+    const thumbnails = imagenes
+      .map((imagen, index) => {
+        const activo = index === 0;
+
+        return `
+          <button
+            class="detail-thumbnail${activo ? " active" : ""}"
+            type="button"
+            aria-label="Ver imagen ${index + 1}"
+            aria-pressed="${activo}"
           >
-        </button>
-      `;
-    })
-    .join("");
+            <img
+              src="${escapeHTML(imagen)}"
+              alt="${escapeHTML(nombre)}"
+              loading="lazy"
+              decoding="async"
+            >
+          </button>
+        `;
+      })
+      .join("");
 
-  contenido.innerHTML = `
-    <div class="product-detail">
+    contenido.innerHTML = `
+      <div class="product-detail">
 
-      <div class="detail-gallery">
+        <div class="detail-gallery">
 
-        <div
-          id="detail-main-image"
-          class="detail-main-image"
-          role="button"
-          tabindex="0"
-          aria-label="Ampliar imagen de ${escapeHTML(nombre)}"
-        >
-          ${
-            descuento
-              ? `<span class="discount-badge">-${descuento}%</span>`
-              : ""
-          }
-
-          <img
-            src="${escapeHTML(imagenPrincipal)}"
-            alt="${escapeHTML(nombre)}"
-            fetchpriority="high"
-            decoding="async"
+          <div
+            id="detail-main-image"
+            class="detail-main-image"
+            role="button"
+            tabindex="0"
+            aria-label="Ampliar imagen de ${escapeHTML(nombre)}"
           >
-        </div>
+            ${
+              descuento
+                ? `<span class="discount-badge">-${descuento}%</span>`
+                : ""
+            }
 
-        ${
-          thumbnails
-            ? `
-              <div class="detail-thumbnails">
-                ${thumbnails}
-              </div>
-            `
-            : ""
-        }
-
-      </div>
-
-      <div class="detail-info">
-
-        ${
-          categoria
-            ? `
-              <div class="detail-category">
-                ${escapeHTML(categoria)}
-              </div>
-            `
-            : ""
-        }
-
-        ${
-          codigo
-            ? `
-              <div class="detail-code">
-                Código: ${escapeHTML(codigo)}
-              </div>
-            `
-            : ""
-        }
-
-        <h1 class="detail-title">
-          ${escapeHTML(nombre)}
-        </h1>
-
-        <div class="detail-prices">
+            <img
+              src="${escapeHTML(imagenPrincipal)}"
+              alt="${escapeHTML(nombre)}"
+              fetchpriority="high"
+              decoding="async"
+            >
+          </div>
 
           ${
-            precio
+            thumbnails
               ? `
-                <span class="detail-price">
-                  ${precio}
-                </span>
-              `
-              : ""
-          }
-
-          ${
-            precioAnterior
-              ? `
-                <span class="detail-old-price">
-                  ${precioAnterior}
-                </span>
+                <div class="detail-thumbnails">
+                  ${thumbnails}
+                </div>
               `
               : ""
           }
 
         </div>
 
-        ${crearBotonWhatsApp(producto)}
+        <div class="detail-info">
 
-        ${
-          descripcion
-            ? `
-              <p class="detail-description">
-                ${escapeHTML(descripcion)}
-              </p>
-            `
-            : ""
-        }
+          <h1 class="detail-title">
+            ${escapeHTML(nombre)}
+          </h1>
+
+          <div class="detail-prices">
+
+            ${
+              precio
+                ? `
+                  <span class="detail-price">
+                    ${precio}
+                  </span>
+                `
+                : ""
+            }
+
+            ${
+              precioAnterior
+                ? `
+                  <span class="detail-old-price">
+                    ${precioAnterior}
+                  </span>
+                `
+                : ""
+            }
+
+          </div>
+
+          ${crearBotonWhatsApp(producto)}
+
+          ${
+            descripcion
+              ? `
+                <p class="detail-description">
+                  ${escapeHTML(descripcion)}
+                </p>
+              `
+              : ""
+          }
+
+        </div>
 
       </div>
 
-    </div>
+      ${crearHTMLRelacionado(relacionados)}
+    `;
 
-    ${crearHTMLRelacionado(relacionados)}
-  `;
+    contenido.classList.remove("detail-loading");
 
-  configurarGaleriaDetalle(producto, imagenes);
-  configurarRelacionados();
+    configurarGaleriaDetalle(producto, imagenes);
+    configurarRelacionados();
+  });
 
   detalle.classList.add("active-section");
 
