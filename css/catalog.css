@@ -1,0 +1,120 @@
+.catalogo-productos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.catalogo-estado {
+  grid-column: 1 / -1;
+  padding: 30px 10px;
+  color: var(--text-soft);
+  text-align: center;
+}
+
+.product-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.product-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.product-image-wrapper {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--surface-soft);
+}
+
+.product-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #111;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.product-info {
+  padding: 14px;
+}
+
+.product-category {
+  margin-bottom: 4px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.product-code {
+  margin-bottom: 6px;
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.product-name {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.product-prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.product-price {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.product-old-price {
+  color: var(--text-soft);
+  font-size: 14px;
+  text-decoration: line-through;
+}
+
+.product-saving {
+  margin-top: 4px;
+  color: var(--accent);
+  font-size: 13px;
+}
+
+.product-description {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  font-size: 14px;
+  line-height: 1.4;
+}
