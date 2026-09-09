@@ -89,7 +89,12 @@ function crearHTMLRelacionado(productos) {
           aria-label="Ver ${nombre}"
         >
           <div class="related-card-image">
-            <img src="${imagen}" alt="${nombre}" loading="lazy">
+            <img
+              src="${imagen}"
+              alt="${nombre}"
+              loading="lazy"
+              decoding="async"
+            >
           </div>
 
           <div class="related-card-info">
@@ -145,6 +150,7 @@ function configurarGaleriaDetalle(producto, imagenes) {
 
     thumbnails.forEach((item) => {
       const activo = item === thumbnail;
+
       item.classList.toggle("active", activo);
       item.setAttribute("aria-pressed", String(activo));
     });
@@ -154,12 +160,20 @@ function configurarGaleriaDetalle(producto, imagenes) {
     abrirLightbox(mainImageElement.src, mainImageElement.alt);
   });
 
-  mainImageElement.addEventListener("error", crearImagenErrorHandler());
+  mainImageElement.addEventListener(
+    "error",
+    crearImagenErrorHandler()
+  );
 
   thumbnails.forEach((thumbnail, index) => {
     thumbnail.addEventListener("click", () => {
       const src = imagenes[index] || PLACEHOLDER_IMAGE;
-      actualizarImagen(src, obtenerNombre(producto), thumbnail);
+
+      actualizarImagen(
+        src,
+        obtenerNombre(producto),
+        thumbnail
+      );
     });
 
     thumbnail.addEventListener("keydown", (event) => {
@@ -189,7 +203,10 @@ function configurarRelacionados() {
     const image = card.querySelector("img");
 
     if (image) {
-      image.addEventListener("error", crearImagenErrorHandler());
+      image.addEventListener(
+        "error",
+        crearImagenErrorHandler()
+      );
     }
   });
 }
@@ -206,14 +223,21 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
   const nombre = obtenerNombre(producto);
   const categoria = String(producto.categoria ?? "").trim();
   const descripcion = String(producto.descripcion ?? "").trim();
+
   const precio = formatoPrecio(producto.Precio);
-  const precioAnterior = formatoPrecio(producto["precio tachado"]);
+  const precioAnterior = formatoPrecio(
+    producto["precio tachado"]
+  );
+
   const descuento = calcularDescuento(
     producto.Precio,
     producto["precio tachado"]
   );
+
   const imagenes = obtenerImagenesProducto(producto);
-  const imagenPrincipal = imagenes[0] || obtenerImagenPrincipal(producto);
+  const imagenPrincipal =
+    imagenes[0] || obtenerImagenPrincipal(producto);
+
   const relacionados = obtenerProductosRelacionados(producto);
 
   const thumbnails = imagenes
@@ -231,6 +255,7 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
             src="${escapeHTML(imagen)}"
             alt="${escapeHTML(nombre)}"
             loading="lazy"
+            decoding="async"
           >
         </button>
       `;
@@ -239,7 +264,9 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
 
   contenido.innerHTML = `
     <div class="product-detail">
+
       <div class="detail-gallery">
+
         <div
           id="detail-main-image"
           class="detail-main-image"
@@ -256,53 +283,87 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
           <img
             src="${escapeHTML(imagenPrincipal)}"
             alt="${escapeHTML(nombre)}"
+            fetchpriority="high"
+            decoding="async"
           >
         </div>
 
         ${
           thumbnails
-            ? `<div class="detail-thumbnails">${thumbnails}</div>`
+            ? `
+              <div class="detail-thumbnails">
+                ${thumbnails}
+              </div>
+            `
             : ""
         }
+
       </div>
 
       <div class="detail-info">
+
         ${
           categoria
-            ? `<div class="detail-category">${escapeHTML(categoria)}</div>`
+            ? `
+              <div class="detail-category">
+                ${escapeHTML(categoria)}
+              </div>
+            `
             : ""
         }
 
         ${
           codigo
-            ? `<div class="detail-code">Código: ${escapeHTML(codigo)}</div>`
+            ? `
+              <div class="detail-code">
+                Código: ${escapeHTML(codigo)}
+              </div>
+            `
             : ""
         }
 
-        <h1 class="detail-title">${escapeHTML(nombre)}</h1>
+        <h1 class="detail-title">
+          ${escapeHTML(nombre)}
+        </h1>
 
         <div class="detail-prices">
+
           ${
             precio
-              ? `<span class="detail-price">${precio}</span>`
+              ? `
+                <span class="detail-price">
+                  ${precio}
+                </span>
+              `
               : ""
           }
 
           ${
             precioAnterior
-              ? `<span class="detail-old-price">${precioAnterior}</span>`
+              ? `
+                <span class="detail-old-price">
+                  ${precioAnterior}
+                </span>
+              `
               : ""
           }
+
         </div>
 
-                ${crearBotonWhatsApp(producto)}
+        ${crearBotonWhatsApp(producto)}
 
         ${
           descripcion
-            ? `<p class="detail-description">${escapeHTML(descripcion)}</p>`
+            ? `
+              <p class="detail-description">
+                ${escapeHTML(descripcion)}
+              </p>
+            `
             : ""
         }
+
       </div>
+
     </div>
 
     ${crearHTMLRelacionado(relacionados)}
@@ -320,7 +381,11 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
   });
 
   document.querySelectorAll(".tab-link").forEach((tab) => {
-    tab.classList.toggle("active", tab.dataset.target === "catalogo");
+    tab.classList.toggle(
+      "active",
+      tab.dataset.target === "catalogo"
+    );
+
     tab.setAttribute(
       "aria-selected",
       String(tab.dataset.target === "catalogo")
@@ -343,7 +408,10 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
   });
 }
 
-export function abrirDetallePorCodigo(codigo, updateUrl = false) {
+export function abrirDetallePorCodigo(
+  codigo,
+  updateUrl = false
+) {
   const codigoBuscado = String(codigo ?? "").trim();
 
   if (!codigoBuscado) {
@@ -364,7 +432,9 @@ export function abrirDetallePorCodigo(codigo, updateUrl = false) {
     return;
   }
 
-  state.categoriaActual = String(producto.categoria ?? "").trim();
+  state.categoriaActual = String(
+    producto.categoria ?? ""
+  ).trim();
 
   mostrarDetalleProducto(producto, updateUrl);
 }
