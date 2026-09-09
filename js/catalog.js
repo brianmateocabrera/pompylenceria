@@ -84,9 +84,7 @@ function obtenerPrecioNumerico(valor) {
       .replace(",", ".")
   );
 
-  return Number.isFinite(numero)
-    ? numero
-    : 0;
+  return Number.isFinite(numero) ? numero : 0;
 }
 
 function aplicarFiltros() {
@@ -95,9 +93,8 @@ function aplicarFiltros() {
   if (categoriaSeleccionada !== "Todos") {
     resultado = resultado.filter(
       (producto) =>
-        String(
-          producto.categoria ?? ""
-        ).trim() === categoriaSeleccionada
+        String(producto.categoria ?? "").trim() ===
+        categoriaSeleccionada
     );
   }
 
@@ -205,9 +202,7 @@ function actualizarCategorias() {
     return;
   }
 
-  const categorias = obtenerCategorias(
-    productosBase
-  );
+  const categorias = obtenerCategorias(productosBase);
 
   contenedor.innerHTML = [
     "Todos",
@@ -235,13 +230,8 @@ function actualizarCategorias() {
 }
 
 function crearToolbar() {
-  const section = document.querySelector(
-    "#catalogo"
-  );
-
-  const grid = document.querySelector(
-    "#catalogo-productos"
-  );
+  const section = document.querySelector("#catalogo");
+  const grid = document.querySelector("#catalogo-productos");
 
   if (!section || !grid) {
     return;
@@ -255,14 +245,12 @@ function crearToolbar() {
     return;
   }
 
-  const toolbar =
-    document.createElement("div");
+  const toolbar = document.createElement("div");
 
   toolbar.className = "catalog-toolbar";
 
   toolbar.innerHTML = `
     <div class="catalog-toolbar-main">
-
       <label
         class="catalog-search"
         for="catalogo-busqueda"
@@ -294,21 +282,11 @@ function crearToolbar() {
         class="catalog-control"
         aria-label="Ordenar productos"
       >
-        <option value="relevancia">
-          Ordenar
-        </option>
-        <option value="nombre-asc">
-          Nombre: A-Z
-        </option>
-        <option value="precio-asc">
-          Precio: menor a mayor
-        </option>
-        <option value="precio-desc">
-          Precio: mayor a menor
-        </option>
-        <option value="descuento-desc">
-          Mayor descuento
-        </option>
+        <option value="relevancia">Ordenar</option>
+        <option value="nombre-asc">Nombre: A-Z</option>
+        <option value="precio-asc">Precio: menor a mayor</option>
+        <option value="precio-desc">Precio: mayor a menor</option>
+        <option value="descuento-desc">Mayor descuento</option>
       </select>
     </div>
 
@@ -329,43 +307,31 @@ function crearToolbar() {
     "#catalogo-orden"
   );
 
-  busqueda?.addEventListener(
-    "input",
-    (event) => {
-      terminoBusqueda = event.target.value;
-      renderizarResultados();
+  busqueda?.addEventListener("input", (event) => {
+    terminoBusqueda = event.target.value;
+    renderizarResultados();
+  });
+
+  orden?.addEventListener("change", (event) => {
+    ordenSeleccionado = event.target.value;
+    renderizarResultados();
+  });
+
+  toolbar.addEventListener("click", (event) => {
+    const boton = event.target.closest(
+      ".catalog-category"
+    );
+
+    if (!boton) {
+      return;
     }
-  );
 
-  orden?.addEventListener(
-    "change",
-    (event) => {
-      ordenSeleccionado =
-        event.target.value;
+    categoriaSeleccionada =
+      boton.dataset.category || "Todos";
 
-      renderizarResultados();
-    }
-  );
-
-  toolbar.addEventListener(
-    "click",
-    (event) => {
-      const boton =
-        event.target.closest(
-          ".catalog-category"
-        );
-
-      if (!boton) {
-        return;
-      }
-
-      categoriaSeleccionada =
-        boton.dataset.category || "Todos";
-
-      actualizarCategorias();
-      renderizarResultados();
-    }
-  );
+    actualizarCategorias();
+    renderizarResultados();
+  });
 
   actualizarCategorias();
 }
@@ -374,13 +340,8 @@ function crearCardProducto(producto) {
   const codigo = obtenerCodigo(producto);
   const nombre = obtenerNombre(producto);
   const imagen = obtenerImagenPrincipal(producto);
-  const categoria = String(
-    producto.categoria ?? ""
-  ).trim();
 
-  const precio = formatoPrecio(
-    producto.Precio
-  );
+  const precio = formatoPrecio(producto.Precio);
 
   const precioAnterior = formatoPrecio(
     producto["precio tachado"]
@@ -391,15 +352,9 @@ function crearCardProducto(producto) {
     producto["precio tachado"]
   );
 
-  const descripcion = String(
-    producto.descripcion ?? ""
-  ).trim();
+  const whatsappUrl = crearWhatsAppUrl(producto);
 
-  const whatsappUrl =
-    crearWhatsAppUrl(producto);
-
-  const article =
-    document.createElement("article");
+  const article = document.createElement("article");
 
   article.className = "product-card";
   article.dataset.productId = codigo;
@@ -413,7 +368,6 @@ function crearCardProducto(producto) {
 
   article.innerHTML = `
     <div class="product-image-wrapper">
-
       ${
         descuento
           ? `
@@ -429,36 +383,13 @@ function crearCardProducto(producto) {
 
       <img
         src="${escapeHTML(imagen)}"
-        alt="${escapeHTML(
-          nombre || "Producto"
-        )}"
+        alt="${escapeHTML(nombre || "Producto")}"
         loading="lazy"
         decoding="async"
       >
     </div>
 
     <div class="product-info">
-
-      ${
-        categoria
-          ? `
-            <div class="product-category">
-              ${escapeHTML(categoria)}
-            </div>
-          `
-          : ""
-      }
-
-      ${
-        codigo
-          ? `
-            <div class="product-code">
-              Código: ${escapeHTML(codigo)}
-            </div>
-          `
-          : ""
-      }
-
       <h3 class="product-name">
         ${escapeHTML(nombre)}
       </h3>
@@ -467,7 +398,6 @@ function crearCardProducto(producto) {
         precio || precioAnterior
           ? `
             <div class="product-prices">
-
               ${
                 precio
                   ? `
@@ -482,49 +412,22 @@ function crearCardProducto(producto) {
                 precioAnterior
                   ? `
                     <span class="product-old-price">
-                      ${escapeHTML(
-                        precioAnterior
-                      )}
+                      ${escapeHTML(precioAnterior)}
                     </span>
                   `
                   : ""
               }
-
             </div>
-          `
-          : ""
-      }
-
-      ${
-        descuento
-          ? `
-            <div class="product-saving">
-              Ahorrás ${descuento}%
-            </div>
-          `
-          : ""
-      }
-
-      ${
-        descripcion
-          ? `
-            <p class="product-description">
-              ${escapeHTML(descripcion)}
-            </p>
           `
           : ""
       }
 
       <a
         class="product-whatsapp"
-        href="${escapeHTML(
-          whatsappUrl
-        )}"
+        href="${escapeHTML(whatsappUrl)}"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Consultar ${escapeHTML(
-          nombre
-        )} por WhatsApp"
+        aria-label="Consultar ${escapeHTML(nombre)} por WhatsApp"
       >
         <i
           class="fa-brands fa-whatsapp"
@@ -533,86 +436,60 @@ function crearCardProducto(producto) {
 
         <span>Consultar</span>
       </a>
-
     </div>
   `;
 
-  const image =
-    article.querySelector("img");
+  const image = article.querySelector("img");
 
-  image?.addEventListener(
-    "error",
-    () => {
-      if (
-        image.dataset.fallbackApplied ===
-        "true"
-      ) {
-        return;
-      }
-
-      image.dataset.fallbackApplied =
-        "true";
-
-      image.src = PLACEHOLDER_IMAGE;
+  image?.addEventListener("error", () => {
+    if (image.dataset.fallbackApplied === "true") {
+      return;
     }
-  );
 
-  article.addEventListener(
-    "click",
-    (event) => {
-      if (
-        event.target.closest(
-          ".product-whatsapp"
-        )
-      ) {
-        return;
-      }
+    image.dataset.fallbackApplied = "true";
+    image.src = PLACEHOLDER_IMAGE;
+  });
 
-      mostrarDetalleProducto(producto);
+  article.addEventListener("click", (event) => {
+    if (
+      event.target.closest(".product-whatsapp")
+    ) {
+      return;
     }
-  );
 
-  article.addEventListener(
-    "keydown",
-    (event) => {
-      if (
-        event.target.closest(
-          ".product-whatsapp"
-        )
-      ) {
-        return;
-      }
+    mostrarDetalleProducto(producto);
+  });
 
-      if (
-        event.key !== "Enter" &&
-        event.key !== " "
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-
-      mostrarDetalleProducto(producto);
+  article.addEventListener("keydown", (event) => {
+    if (
+      event.target.closest(".product-whatsapp")
+    ) {
+      return;
     }
-  );
+
+    if (
+      event.key !== "Enter" &&
+      event.key !== " "
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    mostrarDetalleProducto(producto);
+  });
 
   return article;
 }
 
 function renderizarResultados() {
-  const productos =
-    aplicarFiltros();
+  const productos = aplicarFiltros();
 
   renderizarCatalogo(productos);
-
-  actualizarContador(
-    productos.length
-  );
+  actualizarContador(productos.length);
 }
 
-export function renderizarCatalogo(
-  productos
-) {
+export function renderizarCatalogo(productos) {
   const contenedor = document.querySelector(
     "#catalogo-productos"
   );
@@ -650,9 +527,7 @@ export function renderizarCatalogo(
 }
 
 export async function cargarCatalogo() {
-  mostrarEstado(
-    "Cargando catálogo..."
-  );
+  mostrarEstado("Cargando catálogo...");
 
   try {
     const response = await fetch(
@@ -663,13 +538,10 @@ export async function cargarCatalogo() {
     );
 
     if (!response.ok) {
-      throw new Error(
-        `HTTP ${response.status}`
-      );
+      throw new Error(`HTTP ${response.status}`);
     }
 
-    const productos =
-      await response.json();
+    const productos = await response.json();
 
     if (!Array.isArray(productos)) {
       throw new Error(
@@ -677,20 +549,15 @@ export async function cargarCatalogo() {
       );
     }
 
-    state.productosCatalogo =
-      productos;
+    state.productosCatalogo = productos;
 
     productosBase =
-      obtenerProductosReales(
-        productos
-      );
+      obtenerProductosReales(productos);
 
     crearToolbar();
-
     renderizarResultados();
 
     return productos;
-
   } catch (error) {
     console.error(
       "Error al cargar el catálogo:",
