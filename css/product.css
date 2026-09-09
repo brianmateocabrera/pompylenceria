@@ -115,7 +115,7 @@
   line-height: 1.6;
 }
 
-/* CTA principal del detalle */
+/* CTA principal */
 .detail-info .product-whatsapp {
   display: inline-flex;
   align-items: center;
@@ -123,7 +123,7 @@
   gap: 9px;
   width: min(100%, 360px);
   min-height: 52px;
-  margin-top: 4px;
+  margin: 2px 0 22px;
   padding: 13px 20px;
   border-radius: 12px;
   background: var(--accent);
@@ -248,10 +248,6 @@
 
 /* Celular */
 @media (max-width: 699px) {
-  .product-detail {
-    padding-bottom: 82px;
-  }
-
   .detail-title {
     font-size: 30px;
   }
@@ -265,15 +261,10 @@
   }
 
   .detail-info .product-whatsapp {
-    position: fixed;
-    left: 10px;
-    right: 10px;
-    bottom: 74px;
-    z-index: 90;
-    width: auto;
+    width: 100%;
     min-height: 52px;
-    margin: 0;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    margin-top: 0;
+    margin-bottom: 24px;
   }
 
   .related-products {
@@ -288,8 +279,6 @@
   }
 
   .detail-info .product-whatsapp {
-    left: 7px;
-    right: 7px;
-    bottom: 71px;
+    min-height: 50px;
   }
 }
