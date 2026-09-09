@@ -1,176 +1,56 @@
+/* =========================
+   RESPONSIVE GLOBAL
+   ========================= */
+
+/*
+   Los estilos específicos de:
+   - Header → header.css
+   - Catálogo → catalog.css
+   - Producto → product.css
+   - Componentes → components.css
+
+   se mantienen en sus respectivos archivos.
+   Este archivo solo contiene ajustes globales.
+*/
+
+/* =========================
+   TABLET
+   ========================= */
+
 @media (max-width: 999px) {
-  .catalogo-productos {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .related-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .product-detail {
-    grid-template-columns: 1fr;
-  }
-
-  .detail-info {
-    align-self: auto;
-  }
-
-  .product-whatsapp {
-    width: 100%;
+  body {
+    padding-bottom: 70px;
   }
 }
+
+/* =========================
+   CELULAR
+   ========================= */
 
 @media (max-width: 699px) {
   body {
     padding-bottom: 64px;
   }
+}
 
-  main {
-    width: min(100% - 20px, 1200px);
-    padding-top: 92px;
-    padding-bottom: 24px;
-  }
+/* =========================
+   CELULARES MUY CHICOS
+   ========================= */
 
-  .content-section {
-    min-height: calc(100vh - 116px);
-  }
-
-  .brand h1 {
-    font-size: 34px;
-  }
-
-  .brand h2 {
-    font-size: 21px;
-  }
-
-  .section-heading {
-    margin-bottom: 14px;
-  }
-
-  .section-heading h2 {
-    font-size: 28px;
-  }
-
-  .content-section > p {
-    font-size: 16px;
-  }
-
-  .catalogo-productos {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .product-info {
-    padding: 10px;
-  }
-
-  .product-name {
-    font-size: 17px;
-  }
-
-  .product-price {
-    font-size: 17px;
-  }
-
-  .product-old-price {
-    font-size: 12px;
-  }
-
-  .product-description {
-    font-size: 13px;
-  }
-
-  .product-category,
-  .product-code {
-    font-size: 10px;
-  }
-
-  .discount-badge {
-    top: 7px;
-    left: 7px;
-    padding: 3px 6px;
-    font-size: 10px;
-  }
-
-  .detail-title {
-    font-size: 30px;
-  }
-
-  .detail-price {
-    font-size: 24px;
-  }
-
-  .detail-description {
-    font-size: 16px;
-  }
-
-  .related-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .related-card-name {
-    font-size: 14px;
-  }
-
-  .bottom-nav {
-    min-height: 64px;
-  }
-
-  .tab-link {
-    min-height: 64px;
-  }
-
-  .tab-link i {
-    font-size: 15px;
-  }
-
-  .tab-link span {
-    font-size: 11px;
-  }
-
-  .lightbox {
-    padding: 15px;
-  }
-
-  .lightbox img {
-    max-height: 84vh;
+@media (max-width: 380px) {
+  body {
+    padding-bottom: 64px;
   }
 }
 
-@media (max-width: 380px) {
-  main {
-    width: calc(100% - 14px);
-  }
+/* =========================
+   REDUCED MOTION
+   ========================= */
 
-  .catalogo-productos,
-  .related-grid {
-    gap: 7px;
-  }
-
-  .product-info {
-    padding: 8px;
-  }
-
-  .product-name {
-    font-size: 15px;
-  }
-
-  .product-price {
-    font-size: 15px;
-  }
-
-  .product-saving {
-    font-size: 11px;
-  }
-
-  .detail-thumbnails {
-    gap: 5px;
-  }
-
-  .back-button {
-    margin-bottom: 14px;
-    padding: 8px 10px;
-    font-size: 14px;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
   }
 }
