@@ -1,31 +1,73 @@
-/*
 :root {
-  --bg: #111111;
-  --surface: #181818;
-  --surface-soft: #202020;
-  --border: #343434;
-  --text: #f5f5f5;
-  --text-soft: #bdbdbd;
-  --accent: #d9a0c7;
-  --accent-dark: #b875a7;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-  --radius: 14px;
-  --transition: 0.2s ease;
-}
-*/
+  /* =========================
+     BRAND
+     ========================= */
 
-:root {
+  --font-heading: "Tinos", serif;
+  --font-script: "Meow Script", cursive;
+  --font-body: "Tinos", serif;
+
+  --accent: #ff4757;
+  --accent-dark: #d93646;
+
+  /* =========================
+     DARK THEME — DEFAULT
+     ========================= */
+
   --bg: #0d0d0f;
   --surface: #151518;
   --surface-soft: #1c1c21;
+  --surface-hover: #222229;
+
   --border: #2a2a30;
+  --border-soft: rgba(255, 255, 255, 0.07);
+
   --text: #f5f5f5;
   --text-soft: #b8b8bf;
-  --accent: #ff4757;
-  --accent-dark: #d93646;
+  --text-muted: #85858d;
+
   --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  --shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.22);
+
+  --selection-text: #111;
+
+  /* =========================
+     SYSTEM
+     ========================= */
+
   --radius: 16px;
+  --radius-small: 10px;
   --transition: 0.25s ease;
+  --transition-fast: 0.18s ease;
+}
+
+html {
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  /* =========================
+     LIGHT THEME
+     ========================= */
+
+  --bg: #f8f5f3;
+  --surface: #ffffff;
+  --surface-soft: #f2eeec;
+  --surface-hover: #ebe6e3;
+
+  --border: #ded8d5;
+  --border-soft: rgba(30, 25, 25, 0.08);
+
+  --text: #242124;
+  --text-soft: #686267;
+  --text-muted: #8d858a;
+
+  --shadow: 0 12px 30px rgba(40, 30, 30, 0.10);
+  --shadow-soft: 0 8px 22px rgba(40, 30, 30, 0.07);
+
+  --selection-text: #ffffff;
+
+  color-scheme: light;
 }
 
 *,
@@ -41,10 +83,17 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+
   background: var(--bg);
   color: var(--text);
-  font-family: "Tinos", serif;
+
+  font-family: var(--font-body);
+
   padding-bottom: 72px;
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
 }
 
 button,
@@ -70,7 +119,7 @@ img {
 
 ::selection {
   background: var(--accent);
-  color: #111;
+  color: var(--selection-text);
 }
 
 @keyframes sectionIn {
@@ -82,5 +131,15 @@ img {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    transition: none;
   }
 }
