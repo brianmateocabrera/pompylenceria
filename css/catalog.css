@@ -4,7 +4,7 @@
 
 .catalog-toolbar {
   position: sticky;
-  top: 0;
+  top: var(--site-header-height, 83px);
   z-index: 20;
   margin: 0 0 20px;
   padding: 12px 0;
