@@ -27,7 +27,7 @@ main {
 }
 
 /* =========================
-   ENCABEZADOS DE SECCIÓN
+   ENCABEZADOS
    ========================= */
 
 .section-heading {
@@ -84,7 +84,7 @@ main {
 }
 
 /* =========================
-   RESPONSIVE
+   CELULAR
    ========================= */
 
 @media (max-width: 699px) {
