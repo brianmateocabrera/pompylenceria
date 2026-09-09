@@ -1,0 +1,47 @@
+main {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 105px 0 35px;
+}
+
+.content-section {
+  display: none;
+  min-height: calc(100vh - 177px);
+}
+
+.content-section.active-section {
+  display: block;
+  animation: sectionIn 0.25s ease;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  color: var(--accent);
+  font-family: "Meow Script", cursive;
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.section-icon {
+  color: var(--accent);
+  font-size: 18px;
+}
+
+.content-section > p {
+  margin: 0;
+  max-width: 720px;
+  color: var(--text-soft);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.catalog-section {
+  width: 100%;
+}
