@@ -296,12 +296,6 @@ export function mostrarDetalleProducto(producto, updateUrl = true) {
         </div>
 
         ${
-          descuento
-            ? `<div class="detail-saving">Ahorrás un ${descuento}%</div>`
-            : ""
-        }
-
-        ${
           descripcion
             ? `<p class="detail-description">${escapeHTML(descripcion)}</p>`
             : ""
