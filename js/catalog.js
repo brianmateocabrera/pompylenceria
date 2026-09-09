@@ -10,7 +10,7 @@ import {
   obtenerNombre
 } from "./utils.js";
 import { crearWhatsAppUrl } from "./whatsapp.js";
-import { abrirDetallePorCodigo, mostrarDetalleProducto } from "./products.js";
+import { mostrarDetalleProducto } from "./products.js";
 
 function mostrarEstado(mensaje) {
   const contenedor = document.querySelector("#catalogo-productos");
@@ -34,6 +34,7 @@ function crearCardProducto(producto) {
 
   const precio = formatoPrecio(producto.Precio);
   const precioAnterior = formatoPrecio(producto["precio tachado"]);
+
   const descuento = calcularDescuento(
     producto.Precio,
     producto["precio tachado"]
@@ -46,6 +47,7 @@ function crearCardProducto(producto) {
 
   article.className = "product-card";
   article.dataset.productId = codigo;
+
   article.setAttribute("role", "button");
   article.setAttribute("tabindex", "0");
   article.setAttribute(
@@ -57,77 +59,142 @@ function crearCardProducto(producto) {
     <div class="product-image-wrapper">
       ${
         descuento
-          ? `<span class="discount-badge">-${descuento}%</span>`
+          ? `<span class="discount-badge" aria-label="Descuento del ${descuento}%">
+              -${descuento}%
+            </span>`
           : ""
       }
 
       <img
         src="${escapeHTML(imagen)}"
-        alt="${escapeHTML(nombre)}"
+        alt="${escapeHTML(nombre || "Producto")}"
         loading="lazy"
+        decoding="async"
       >
     </div>
 
     <div class="product-info">
+
       ${
         categoria
-          ? `<div class="product-category">${escapeHTML(categoria)}</div>`
+          ? `
+            <div class="product-category">
+              ${escapeHTML(categoria)}
+            </div>
+          `
           : ""
       }
 
       ${
         codigo
-          ? `<div class="product-code">Código: ${escapeHTML(codigo)}</div>`
+          ? `
+            <div class="product-code">
+              Código: ${escapeHTML(codigo)}
+            </div>
+          `
           : ""
       }
 
-      <h3 class="product-name">${escapeHTML(nombre)}</h3>
+      <h3 class="product-name">
+        ${escapeHTML(nombre)}
+      </h3>
 
-      <div class="product-prices">
-        ${
-          precio
-            ? `<span class="product-price">${precio}</span>`
-            : ""
-        }
+      ${
+        precio || precioAnterior
+          ? `
+            <div class="product-prices">
 
-        ${
-          precioAnterior
-            ? `<span class="product-old-price">${precioAnterior}</span>`
-            : ""
-        }
-      </div>
+              ${
+                precio
+                  ? `
+                    <span class="product-price">
+                      ${precio}
+                    </span>
+                  `
+                  : ""
+              }
+
+              ${
+                precioAnterior
+                  ? `
+                    <span class="product-old-price">
+                      ${precioAnterior}
+                    </span>
+                  `
+                  : ""
+              }
+
+            </div>
+          `
+          : ""
+      }
+
+      ${
+        descuento
+          ? `
+            <div class="product-saving">
+              Ahorrás ${descuento}%
+            </div>
+          `
+          : ""
+      }
 
       ${
         descripcion
-          ? `<p class="product-description">${escapeHTML(descripcion)}</p>`
+          ? `
+            <p class="product-description">
+              ${escapeHTML(descripcion)}
+            </p>
+          `
           : ""
       }
 
       <a
         class="product-whatsapp"
-        href="${whatsappUrl}"
+        href="${escapeHTML(whatsappUrl)}"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Consultar ${escapeHTML(nombre)} por WhatsApp"
       >
-        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-        WhatsApp
+        <i
+          class="fa-brands fa-whatsapp"
+          aria-hidden="true"
+        ></i>
+
+        <span>Consultar</span>
       </a>
+
     </div>
   `;
 
+  configurarImagen(article);
+  configurarInteraccion(article, producto);
+
+  return article;
+}
+
+function configurarImagen(article) {
   const image = article.querySelector("img");
 
-  if (image) {
-    image.addEventListener("error", (event) => {
-      if (!event.currentTarget.src.endsWith(PLACEHOLDER_IMAGE)) {
-        event.currentTarget.src = PLACEHOLDER_IMAGE;
-      }
-    });
+  if (!image) {
+    return;
   }
 
+  image.addEventListener("error", () => {
+    if (image.dataset.fallbackApplied === "true") {
+      return;
+    }
+
+    image.dataset.fallbackApplied = "true";
+    image.src = PLACEHOLDER_IMAGE;
+  });
+}
+
+function configurarInteraccion(article, producto) {
   article.addEventListener("click", (event) => {
-    if (event.target.closest(".product-whatsapp")) {
+    const enlace = event.target.closest(".product-whatsapp");
+
+    if (enlace) {
       return;
     }
 
@@ -135,19 +202,18 @@ function crearCardProducto(producto) {
   });
 
   article.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" && event.key !== " ") {
-      return;
-    }
-
     if (event.target.closest(".product-whatsapp")) {
       return;
     }
 
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
     event.preventDefault();
+
     mostrarDetalleProducto(producto);
   });
-
-  return article;
 }
 
 export function renderizarCatalogo(productos) {
@@ -159,24 +225,44 @@ export function renderizarCatalogo(productos) {
 
   contenedor.innerHTML = "";
 
+  if (!Array.isArray(productos) || productos.length === 0) {
+    mostrarEstado("No hay productos disponibles.");
+    return;
+  }
+
   let categoria = "";
+  let cantidadRenderizada = 0;
 
   productos.forEach((producto) => {
+    if (!producto || typeof producto !== "object") {
+      return;
+    }
+
     if (esCategoria(producto)) {
       categoria = String(producto["Cod."] ?? "").trim();
       return;
     }
 
-    if (!obtenerNombre(producto)) {
+    const nombre = obtenerNombre(producto);
+
+    if (!nombre) {
       return;
     }
 
+    /*
+     * Se conserva la categoría calculada a partir
+     * de las filas de categoría del JSON.
+     */
     producto.categoria = categoria;
 
-    contenedor.appendChild(crearCardProducto(producto));
+    contenedor.appendChild(
+      crearCardProducto(producto)
+    );
+
+    cantidadRenderizada += 1;
   });
 
-  if (!contenedor.children.length) {
+  if (cantidadRenderizada === 0) {
     mostrarEstado("No hay productos disponibles.");
   }
 }
@@ -196,7 +282,9 @@ export async function cargarCatalogo() {
     const productos = await response.json();
 
     if (!Array.isArray(productos)) {
-      throw new Error("El catálogo no contiene un array válido.");
+      throw new Error(
+        "El catálogo no contiene un array válido."
+      );
     }
 
     state.productosCatalogo = productos;
@@ -205,8 +293,15 @@ export async function cargarCatalogo() {
 
     return productos;
   } catch (error) {
-    console.error("Error al cargar el catálogo:", error);
-    mostrarEstado("No se pudo cargar el catálogo.");
+    console.error(
+      "Error al cargar el catálogo:",
+      error
+    );
+
+    mostrarEstado(
+      "No se pudo cargar el catálogo."
+    );
+
     return [];
   }
 }
