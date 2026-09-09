@@ -63,24 +63,29 @@
 }
 
 .detail-category {
-  margin-bottom: 5px;
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
   color: var(--accent);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .detail-code {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: var(--text-soft);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .detail-title {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   color: var(--text);
   font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.05;
+  line-height: 1.08;
 }
 
 .detail-prices {
@@ -88,31 +93,27 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 14px;
 }
 
 .detail-price {
   color: var(--accent);
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
+  line-height: 1;
 }
 
 .detail-old-price {
   color: var(--text-soft);
+  font-size: 15px;
   text-decoration: line-through;
 }
 
 .detail-saving {
-  margin-bottom: 18px;
+  margin: -5px 0 16px;
   color: var(--accent);
   font-size: 14px;
-}
-
-.detail-description {
-  margin-bottom: 20px;
-  color: var(--text-soft);
-  font-size: 17px;
-  line-height: 1.6;
+  font-weight: 600;
 }
 
 /* CTA principal */
@@ -123,7 +124,7 @@
   gap: 9px;
   width: min(100%, 360px);
   min-height: 52px;
-  margin: 2px 0 22px;
+  margin: 0 0 24px;
   padding: 13px 20px;
   border-radius: 12px;
   background: var(--accent);
@@ -153,6 +154,14 @@
   font-size: 20px;
 }
 
+.detail-description {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* Productos relacionados */
 .related-products {
   margin-top: 40px;
 }
@@ -244,16 +253,24 @@
   .detail-info .product-whatsapp {
     width: 100%;
   }
+
+  .related-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* Celular */
 @media (max-width: 699px) {
+  .product-detail {
+    gap: 22px;
+  }
+
   .detail-title {
     font-size: 30px;
   }
 
   .detail-price {
-    font-size: 24px;
+    font-size: 27px;
   }
 
   .detail-description {
@@ -263,12 +280,16 @@
   .detail-info .product-whatsapp {
     width: 100%;
     min-height: 52px;
-    margin-top: 0;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
   }
 
   .related-products {
-    margin-top: 32px;
+    margin-top: 34px;
+  }
+
+  .related-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
 }
 
@@ -276,6 +297,14 @@
 @media (max-width: 380px) {
   .detail-thumbnails {
     gap: 5px;
+  }
+
+  .detail-title {
+    font-size: 27px;
+  }
+
+  .detail-price {
+    font-size: 25px;
   }
 
   .detail-info .product-whatsapp {
