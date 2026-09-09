@@ -4,6 +4,9 @@ let lightbox;
 let lightboxImage;
 let lightboxClose;
 
+let imagenActual = "";
+let altActual = "";
+
 export function inicializarGallery() {
   lightbox = document.querySelector("#image-lightbox");
   lightboxImage = document.querySelector("#lightbox-image");
@@ -33,11 +36,20 @@ export function abrirLightbox(src, alt = "") {
     return;
   }
 
-  lightboxImage.src = src || PLACEHOLDER_IMAGE;
-  lightboxImage.alt = alt;
+  imagenActual = src || PLACEHOLDER_IMAGE;
+  altActual = alt;
+
+  lightboxImage.src = imagenActual;
+  lightboxImage.alt = altActual;
+
   lightbox.classList.add("active");
   lightbox.setAttribute("aria-hidden", "false");
+
   document.body.classList.add("lightbox-open");
+
+  requestAnimationFrame(() => {
+    lightboxClose?.focus();
+  });
 }
 
 export function cerrarLightbox() {
@@ -47,7 +59,12 @@ export function cerrarLightbox() {
 
   lightbox.classList.remove("active");
   lightbox.setAttribute("aria-hidden", "true");
+
   lightboxImage.src = "";
   lightboxImage.alt = "";
+
+  imagenActual = "";
+  altActual = "";
+
   document.body.classList.remove("lightbox-open");
 }
