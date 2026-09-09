@@ -37,17 +37,42 @@
   <link rel="stylesheet" href="css/catalog.css">
   <link rel="stylesheet" href="css/product.css">
   <link rel="stylesheet" href="css/responsive.css">
+
+<script>
+  (() => {
+    const guardado = localStorage.getItem("theme");
+
+    const tema =
+      guardado === "light" || guardado === "dark"
+        ? guardado
+        : window.matchMedia("(prefers-color-scheme: light)").matches
+          ? "light"
+          : "dark";
+
+    document.documentElement.dataset.theme = tema;
+  })();
+</script>
 </head>
 
 <body>
   <header class="site-header">
-    <div class="header-inner">
-      <div class="brand">
-        <h1>POMPY</h1>
-        <h2>Lencería &amp; Sex-Shop</h2>
-      </div>
+  <div class="header-inner">
+    <div class="brand">
+      <h1>POMPY</h1>
+      <h2>Lencería &amp; Sex-Shop</h2>
     </div>
-  </header>
+
+    <button
+      id="theme-toggle"
+      class="theme-toggle"
+      type="button"
+      aria-label="Cambiar a modo claro"
+      title="Cambiar tema"
+    >
+      <i class="fa-solid fa-moon" aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
 
   <main>
 
