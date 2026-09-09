@@ -98,12 +98,6 @@ function crearCardProducto(producto) {
       </div>
 
       ${
-        descuento
-          ? `<div class="product-saving">Ahorrás un ${descuento}%</div>`
-          : ""
-      }
-
-      ${
         descripcion
           ? `<p class="product-description">${escapeHTML(descripcion)}</p>`
           : ""
