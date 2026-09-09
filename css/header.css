@@ -30,8 +30,7 @@
 
   transition:
     background-color var(--transition),
-    border-color var(--transition),
-    box-shadow var(--transition);
+    border-color var(--transition);
 }
 
 .header-inner {
@@ -65,9 +64,7 @@
 
   letter-spacing: 0.085em;
 
-  transition:
-    color var(--transition),
-    transform var(--transition);
+  transition: color var(--transition);
 }
 
 .brand h2 {
@@ -119,8 +116,7 @@
 .theme-toggle i {
   font-size: 15px;
 
-  transition:
-    transform 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 .theme-toggle:hover {
@@ -172,8 +168,7 @@
 
   transition:
     background-color var(--transition),
-    border-color var(--transition),
-    box-shadow var(--transition);
+    border-color var(--transition);
 }
 
 .bottom-nav {
@@ -234,8 +229,7 @@
 .tab-link i {
   font-size: 17px;
 
-  transition:
-    transform var(--transition-fast);
+  transition: transform var(--transition-fast);
 }
 
 .tab-link span {
