@@ -382,10 +382,10 @@
 }
 
 /* =========================
-   CTA WHATSAPP
+   CTA WHATSAPP — TARJETA
    ========================= */
 
-.product-whatsapp {
+.product-card .product-whatsapp {
   display: flex;
 
   align-items: center;
@@ -419,7 +419,7 @@
     box-shadow var(--transition);
 }
 
-.product-whatsapp:hover {
+.product-card .product-whatsapp:hover {
   background: var(--accent);
   color: #111;
 
@@ -428,12 +428,12 @@
   box-shadow: 0 5px 15px rgba(255, 71, 87, 0.18);
 }
 
-.product-whatsapp:focus-visible {
+.product-card .product-whatsapp:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-.product-whatsapp i {
+.product-card .product-whatsapp i {
   font-size: 16px;
 }
 
@@ -636,7 +636,7 @@
     font-size: 12px;
   }
 
-  .product-whatsapp {
+  .product-card .product-whatsapp {
     min-height: 42px;
 
     padding: 9px 8px;
@@ -675,7 +675,7 @@
     font-size: 17px;
   }
 
-  .product-whatsapp {
+  .product-card .product-whatsapp {
     font-size: 12px;
   }
 }
@@ -687,7 +687,7 @@
 @media (prefers-reduced-motion: reduce) {
   .product-card,
   .product-image-wrapper img,
-  .product-whatsapp,
+  .product-card .product-whatsapp,
   .catalog-category {
     transition: none;
   }
