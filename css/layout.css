@@ -1,47 +1,143 @@
+/* =========================
+   LAYOUT PRINCIPAL
+   ========================= */
+
 main {
   width: min(1200px, calc(100% - 32px));
+
   margin: 0 auto;
-  padding: 105px 0 35px;
+
+  padding: 105px 0 42px;
 }
+
+/* =========================
+   SECCIONES
+   ========================= */
 
 .content-section {
   display: none;
+
   min-height: calc(100vh - 177px);
 }
 
 .content-section.active-section {
   display: block;
+
   animation: sectionIn 0.25s ease;
 }
 
+/* =========================
+   ENCABEZADOS DE SECCIÓN
+   ========================= */
+
 .section-heading {
   display: flex;
+
   align-items: center;
+
   gap: 10px;
-  margin-bottom: 18px;
+
+  margin-bottom: 20px;
 }
 
 .section-heading h2 {
   margin: 0;
+
   color: var(--accent);
-  font-family: "Meow Script", cursive;
+
+  font-family: var(--font-script);
   font-size: 32px;
   font-weight: 400;
+  line-height: 1;
 }
 
 .section-icon {
   color: var(--accent);
+
   font-size: 18px;
+
+  transition: color var(--transition);
 }
 
+/* =========================
+   TEXTO DE SECCIÓN
+   ========================= */
+
 .content-section > p {
-  margin: 0;
   max-width: 720px;
+
+  margin: 0;
+
   color: var(--text-soft);
+
+  font-family: var(--font-body);
   font-size: 18px;
   line-height: 1.6;
 }
 
+/* =========================
+   CATÁLOGO
+   ========================= */
+
 .catalog-section {
   width: 100%;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 699px) {
+  main {
+    width: min(100%, calc(100% - 20px));
+
+    padding: 92px 0 28px;
+  }
+
+  .content-section {
+    min-height: calc(100vh - 139px);
+  }
+
+  .section-heading {
+    gap: 8px;
+
+    margin-bottom: 15px;
+  }
+
+  .section-heading h2 {
+    font-size: 29px;
+  }
+
+  .section-icon {
+    font-size: 16px;
+  }
+
+  .content-section > p {
+    font-size: 16px;
+    line-height: 1.55;
+  }
+}
+
+/* =========================
+   CELULARES MUY CHICOS
+   ========================= */
+
+@media (max-width: 380px) {
+  main {
+    width: min(100%, calc(100% - 16px));
+  }
+
+  .section-heading h2 {
+    font-size: 27px;
+  }
+}
+
+/* =========================
+   REDUCED MOTION
+   ========================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .content-section.active-section {
+    animation: none;
+  }
 }
