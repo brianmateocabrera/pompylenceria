@@ -109,9 +109,48 @@
 }
 
 .detail-description {
+  margin-bottom: 20px;
   color: var(--text-soft);
   font-size: 17px;
   line-height: 1.6;
+}
+
+/* CTA principal del detalle */
+.detail-info .product-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: min(100%, 360px);
+  min-height: 52px;
+  margin-top: 4px;
+  padding: 13px 20px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #111;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition:
+    transform var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.detail-info .product-whatsapp:hover {
+  background: var(--accent-dark);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.detail-info .product-whatsapp:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.detail-info .product-whatsapp i {
+  font-size: 20px;
 }
 
 .related-products {
@@ -190,4 +229,67 @@
   color: var(--text-soft);
   font-size: 12px;
   text-decoration: line-through;
+}
+
+/* Tablet */
+@media (max-width: 999px) {
+  .product-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-info {
+    align-self: auto;
+  }
+
+  .detail-info .product-whatsapp {
+    width: 100%;
+  }
+}
+
+/* Celular */
+@media (max-width: 699px) {
+  .product-detail {
+    padding-bottom: 82px;
+  }
+
+  .detail-title {
+    font-size: 30px;
+  }
+
+  .detail-price {
+    font-size: 24px;
+  }
+
+  .detail-description {
+    font-size: 16px;
+  }
+
+  .detail-info .product-whatsapp {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: 74px;
+    z-index: 90;
+    width: auto;
+    min-height: 52px;
+    margin: 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .related-products {
+    margin-top: 32px;
+  }
+}
+
+/* Celulares muy chicos */
+@media (max-width: 380px) {
+  .detail-thumbnails {
+    gap: 5px;
+  }
+
+  .detail-info .product-whatsapp {
+    left: 7px;
+    right: 7px;
+    bottom: 71px;
+  }
 }
